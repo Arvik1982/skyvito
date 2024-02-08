@@ -52,6 +52,7 @@ return(
  id="first-last" 
  placeholder="Фамилия (необязательно)"/>
 
+
 <input onChange={(event)=>{ getInputValue(event, dispatch, 'userCity')}}
 className={`${styles.modal__input} ${styles.city}`} 
 type="text" 
