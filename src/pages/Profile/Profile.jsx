@@ -1,3 +1,4 @@
+
 import { useSelector } from 'react-redux'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
@@ -7,6 +8,7 @@ import ToMainButton from '../../components/ToMainButton/ToMainButton'
 // import { baseData } from '../../vars/vars'
 // import AddCard from '../../components/AddCard/AddCard'
 import checkLoginStatus from '../../functions/checkLoginStatus'
+import { refreshTokens, getCurrentUserAdds } from '../../api'
 
 
 
@@ -14,14 +16,8 @@ export default function Profile() {
 
   const userDataRedux = useSelector(state=>state.authRedux.userData) //  получить массив юзера и передать в AddCard
   const userData = checkLoginStatus(userDataRedux)
-
-
-  // const userDataRedux = useSelector(state=>state.authRedux.userData) //  получить массив юзера и передать в AddCard
-  // userDataRedux?userData=userDataRedux: 
-  // JSON.parse(localStorage.getItem('userData'))?userData = JSON.parse(localStorage.getItem('userData')):
-  // userData=baseData
+ 
   
-  console.log(userData)
 
   return (
     <div className={styles.wrapper}>
@@ -150,7 +146,7 @@ export default function Profile() {
             </div>
           </div>
         </main>
-
+<button type='button' onClick={()=>{getCurrentUserAdds()}}>click</button>
   <Footer/>
       </div>
     </div>

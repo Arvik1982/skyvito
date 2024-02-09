@@ -69,7 +69,7 @@ const response = await fetch(
   }
 )
 if (!response.ok) {
-  console.log(response)
+  
   throw new Error(Error.message)
 }
 const newUser = await response.json()
@@ -102,14 +102,14 @@ if (!newTokens.ok) {
   throw new Error(Error.message)
 }
 const newTokensResponse = await newTokens.json()
-console.log(newTokensResponse)
+
 localStorage.setItem('user_token',newTokensResponse.access_token)
 localStorage.setItem('user_token_refresh',newTokensResponse.refresh_token)
 return newTokensResponse
 }
 
 export async function getUserByToken(token) {
-console.log(token)
+
 const userByToken = await fetch(
   'http://localhost:8090/user',
   {
@@ -122,10 +122,69 @@ const userByToken = await fetch(
 )
 
 if (!userByToken.ok) {
-  console.log(userByToken)
+  
   throw new Error(Error.message)
 }
 const newUserByToken= await userByToken.json()
-console.log(newUserByToken)
+
 return newUserByToken
+}
+
+export async function refreshTokens() {
+const token = localStorage.getItem('user_token')
+const refresh = localStorage.getItem('user_token_refresh')
+
+
+  const responseRefresh = await fetch(
+    'http://localhost:8090/auth/login',
+    {
+      method: 'PUT',
+      body:JSON.stringify({
+        "access_token": `${token}`,
+        "refresh_token": `${refresh}`, 
+       
+      }),
+      headers: {
+        
+        "content-type": "application/json",
+      },
+    }
+  )
+  if (!responseRefresh.ok) {
+    console.log(responseRefresh)
+    throw new Error(Error.message)
+  }
+
+const dataRefresh = await responseRefresh.json()
+console.log(dataRefresh)
+localStorage.setItem('user_token',dataRefresh.access_token)
+localStorage.setItem('user_token_refresh',dataRefresh.refresh_token)
+console.log(localStorage.getItem('user_token_refresh'))
+console.log(localStorage.getItem('user_token'))
+return dataRefresh
+}
+
+
+export function getCurrentUserAdds() {
+  refreshTokens().then((data)=>{
+    return fetch(
+      'http://127.0.0.1:8090/ads/me?sorting=new&page=1' ,
+      {
+        method:'GET',
+  
+        headers:{
+          "content-type": "application/json",
+          Authorization:`Bearer ${data.access_token}`,
+        }
+      },
+    )
+
+  }).then((response)=>{
+    const resp =response.json()
+    console.log (resp)
+    return resp})
+    .then((data)=>{return data
+      
+    }).then((data)=>{console.log(data)})
+
 }

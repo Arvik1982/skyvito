@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 
 import { getAllAds } from '../../api'
@@ -14,8 +14,11 @@ import styles from './main.module.css'
 
 
 export default function Main() {
+  const searchResult = useSelector(state=>state.addsRedux.searchResult)
   const [allAds, setAllAds] = useState([])
   const dispatch =useDispatch()
+  console.log(searchResult)
+  
 
   useEffect(() => {
     getAllAds().then((data) => {
@@ -23,6 +26,11 @@ export default function Main() {
       dispatch(setAdds(data))
     })
   }, [])
+
+  useEffect(() => {
+    setAllAds(searchResult)
+  }, [searchResult])
+
   return (
     <div className="main__page">
       <div className={styles.wrapper}>

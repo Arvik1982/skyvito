@@ -10,11 +10,11 @@ export default function SellerInfo({seller}){
                   <div className={`${styles.profile_sell__seller} ${styles.seller}`}>
                     <div className={styles.seller__left}>
                       <div className={styles.seller__img}>
-                        <a href="" target="_self">
+                        {/* <a href="" target="_self"> */}
                           <img src={seller?.avatar
                             ? `${localHost}${seller.avatar}`
                             : `${logo}`} alt="" />
-                        </a>
+                        {/* </a> */}
                       </div>
                     </div>
                     <div className={styles.seller__right}>
@@ -23,9 +23,9 @@ export default function SellerInfo({seller}){
                       <p className={styles.seller__inf}>Продает с {seller.sells_from}</p>
                       <div className={styles.seller__img_mob_block}>
                         <div className={styles.seller__img_mob}>
-                          <a href="" target="_self">
+                          {/* <a href="" target="_self"> */}
                             <img src="#" alt=""/>
-                          </a>
+                          {/* </a> */}
                         </div>
                       </div>
                       <button type='button' className={`${styles.seller__btn} ${styles.btn_hov02}`}>
