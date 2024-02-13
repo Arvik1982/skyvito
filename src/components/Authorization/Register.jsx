@@ -24,6 +24,7 @@ export default function Register(){
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
+  
 return(
 
 <form className={styles.modal__form_login} id="formLogUp" action="#">
@@ -71,17 +72,24 @@ onClick={
     userCity,
     userId
     )
-    .then((data)=>{dispatch(setUserData(data))}).then(()=>{
-        navigate('/profile')
-    }).then(getTokens(userMail,userPassword))
-    .catch((newError)=> dispatch(setError(newError.message)))
+    .then((data)=>{dispatch(setUserData(data));dispatch(setError(''))})
+    .then((data)=>{navigate('/profile') 
+        return data})
+    .then(()=>{getTokens(userMail,userPassword)
+        .catch((errorData)=>{console.log('test1');
+         dispatch(setError(errorData.message))})
+    })
+    .catch((errorData)=>{console.log('test2'); 
+    console.log(errorData.message); 
+    dispatch(setError(errorData.message))
+})
 
 }
 } 
     type='button' 
     className={styles.modal__btn_signup_ent} 
     id="SignUpEnter">
-    <a href="#">Зарегистрироваться</a> </button>
+    Зарегистрироваться </button>
 </form>
 
 )}

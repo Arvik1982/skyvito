@@ -229,6 +229,7 @@
   }
   
   .settings__img {
+    
     width: 170px;
     height: 170px;
     border-radius: 50%;
@@ -236,14 +237,18 @@
   }
   
   .settings__img img {
-    width: 100%;
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    background-color: #F0F0F0;
+    /* width: 100%;
     height: auto;
     display: block;
     -o-object-fit: cover;
-       object-fit: cover;
+       object-fit: cover; */
   }
   
-  .settings__change-photo {
+  .settings__change_photo {
     margin-top: 10px;
     margin-bottom: 30px;
     text-decoration: none;

@@ -13,10 +13,37 @@ const regSlice = createSlice({
         userSurName:'',
         userCity:'',
         enterMode:'login',
+        access_token:'',
+        access_refresh:'',
+        userTmpName:'',
+        userTmpSurName:'',
+        userTmpCity:'',
+        userTmpPhone:'',
+
        
 
     },
     reducers:{
+        setUserTmpPhone(state,action){
+            state.userTmpPhone=action.payload
+            console.log(state.userTmpPhone)
+            
+        },
+        setUserTmpCity(state,action){
+            state.userTmpCity=action.payload
+            console.log(state.userTmpCity)
+            
+        },
+        setUserTmpName(state,action){
+            state.userTmpName=action.payload
+            console.log(state.userTmpName)
+            
+        },
+        setUserTmpSurName(state,action){
+            state.userTmpSurName=action.payload
+            
+            console.log(state.userTmpSurName)
+        },
         setUserMail(state,action){
             state.userMail=action.payload
             
@@ -57,6 +84,14 @@ const regSlice = createSlice({
             state.enterMode=action.payload
             
         },
+        setTokenAccess(state,action){
+            state.access_token=action.payload
+            
+        },
+        setTokenRefresh(state,action){
+            state.access_refresh=action.payload
+            
+        },
     }
 })
 
@@ -69,6 +104,12 @@ export const{
     setUserName,
     setUserSurName,
     setUserData,
-    setEnterMode
+    setEnterMode,
+    setTokenAccess,
+    setTokenRefresh,
+    setUserTmpName,
+    setUserTmpSurName,
+    setUserTmpPhone,
+    setUserTmpCity
  }=regSlice.actions
 export default regSlice.reducer

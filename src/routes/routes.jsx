@@ -8,6 +8,7 @@ import SellerProfile from "../pages/SellerProfile/SellerProfile"
 import AuthorizationPage from "../pages/Autorization/AuthorizationPage"
 import ProtectedRoute  from "../components/Protected/ProtectedRoutes"
 import checkLoginStatus from "../functions/checkLoginStatus"
+import ErrorPage from "../pages/Error/Error"
 
 export default function AppRoutes(){
     let isLogin;
@@ -21,6 +22,7 @@ export default function AppRoutes(){
             <Route path="/article" element={<Article/>}/>
             <Route path="/myarticle" element={<MyArticle/>}/>
             <Route path="/seller" element={<SellerProfile/>}/>
+            <Route path="*" element={<ErrorPage/>}/>
             <Route path="/login" element={<AuthorizationPage/>}/>
         <Route element ={<ProtectedRoute isAllowed={isLogin} />}>
             <Route path="/profile" element={<Profile/>}/>

@@ -7,5 +7,5 @@ export const baseData = {
     city:'',
     id:'',
 }
-export const accessToken = localStorage.getItem('user_token')
-export const refreshToken = localStorage.getItem('user_token_refresh')
+export const accessToken = String(localStorage.getItem('user_token'))
+export const refreshToken = String(localStorage.getItem('user_token_refresh'))
