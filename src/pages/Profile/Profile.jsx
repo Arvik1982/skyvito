@@ -1,23 +1,38 @@
 
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector} from 'react-redux'
+import { useEffect, useState} from 'react'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import styles from './profile.module.css'
 import logo from'../../img/logo.png'
 import ToMainButton from '../../components/ToMainButton/ToMainButton'
-// import { baseData } from '../../vars/vars'
-// import AddCard from '../../components/AddCard/AddCard'
+import AddCard from '../../components/AddCard/AddCard'
 import checkLoginStatus from '../../functions/checkLoginStatus'
-import { refreshTokens, getCurrentUserAdds } from '../../api'
-
+import ProfileTextInput from '../../components/ProfileTextInputs/ProfileTextInputs'
+import ChangeAvatar from '../../components/ChangeAvatar/ChangeAvatar'
+import getUserAddsByToken from '../../functions/getUserAddsByToken'
+import SaveUserData from '../../components/SaveUserData/SaveUserData'
+import { setUserTmpPhone } from '../../store/reducers/sliceReg'
 
 
 export default function Profile() {
 
-  const userDataRedux = useSelector(state=>state.authRedux.userData) //  получить массив юзера и передать в AddCard
-  const userData = checkLoginStatus(userDataRedux)
- 
+const dispatch=useDispatch()
+const error=useSelector(state=>state.errorRedux.error)  
+const userDataRedux = useSelector(state=>state.authRedux.userData) //  получить массив юзера и передать в AddCard
+const userData = checkLoginStatus(userDataRedux)
+const currentUserAdds = useSelector(state=>state.addsRedux.currentUserAdds)
+
+const [userPhone, setUserPhone]=useState(userData.phone?userData.phone:'')
+
+console.log(userData)
+useEffect(()=>{
+  dispatch(setUserTmpPhone(userPhone))
+},[userPhone])
   
+  useEffect(()=>{
+    getUserAddsByToken(dispatch) 
+  },[])
 
   return (
     <div className={styles.wrapper}>
@@ -39,9 +54,10 @@ export default function Profile() {
                 </form>
               </div>
 
-              <h2 className={styles.main__h2}>Здравствуйте,{userData.name?userData.name:'No Named User'}!</h2>
-
+              <h2 className={styles.main__h2}>Здравствуйте,{userData.name?userData.name:'Введите имя'}!</h2>
+              
               <div className={`${styles.main__profile} ${styles.profile}`}>
+              
                 <div className={styles.profile__content}>
                   <h3 className={`${styles.profile__title} ${styles.title}`}>
                     Настройки профиля
@@ -49,104 +65,61 @@ export default function Profile() {
                   <div
                     className={`${styles.profile__settings} ${styles.settings}`}
                   >
-                    <div className={styles.settings__left}>
-                      <div className={styles.settings__img}>
-                        <a href="" target="_self">
-                          <img src="#" alt="self" />
-                        </a>
-                      </div>
-                      <a
-                        className={styles.settings__change_photo}
-                        href=""
-                        target="_self"
-                      >
-                        Заменить
-                      </a>
-                    </div>
+                    <ChangeAvatar avatar={userData.avatar}/>
+                    
                     <div className={styles.settings__right}>
                       <form className={styles.settings__form} action="#">
+
                         <div className={styles.settings__div}>
-                          <label 
-                        //   for="fname"
-                          >Имя</label>
-                          <input
-                            className={styles.settings__f_name}
-                            id="fname"
-                            name="fname"
-                            type="text"
-                            value={userData.name}
-                            placeholder="Введите имя"
-                          />
+                          <label>Имя</label>
+                          <ProfileTextInput name='name' value={userData.name} placeholder='Введите имя'/>
                         </div>
 
                         <div className={styles.settings__div}>
-                          <label 
-                        //   for="lname"
-                          >Фамилия</label>
-                          <input
-                            className={styles.settings__l_name}
-                            id="lname"
-                            name="lname"
-                            type="text"
-                            value={userData.surname}
-                            placeholder="Введите фамилию"
-                          />
+                          <label>Фамилия</label>
+                          <ProfileTextInput name='surname' value={userData.surname} placeholder='Введите фамилию'/>
                         </div>
 
                         <div className={styles.settings__div}>
-                          <label 
-                        //   for="city"
-                          >Город</label>
-                          <input
-                            className={styles.settings__city}
-                            id="settings-city"
-                            name="city"
-                            type="text"
-                            value={userData.city}
-                            placeholder=""
-                          />
+                          <label>Город</label>
+                          <ProfileTextInput name='city' value={userData.city} placeholder='Введите город'/>
                         </div>
 
                         <div className={styles.settings__div}>
-                          <label 
-                        //   for="phone"
-                          >Телефон</label>
+                          <label>Телефон</label>
                           <input
+                            onChange={(event)=>{setUserPhone(event.target.value)}}
                             className={styles.settings__phone}
                             id="settings-phone"
                             name="phone"
                             type="tel"
-                            value={userData.phone?userData.phone:''}
+                            value={userPhone}
                             placeholder="Введите телефон: +79161234567"
                           />
                         </div>
-
-                        <button
-                          type="button"
-                          className={`${styles.settings__btn} ${styles.btn_hov02}`}
-                          id="settings-btn"
-                        >
-                          Сохранить
-                        </button>
+                          <SaveUserData/>
                       </form>
                     </div>
                   </div>
                 </div>
               </div>
-
               <h3 className={`${styles.main__title} ${styles.title}`}>
                 Мои товары
               </h3>
             </div>
+
+            {error&&<h2 style={{color:'red', marginBottom:'5px'}}>{error}</h2>}
+
             <div className={styles.main__content}>
               <div className={`${styles.content__cards} ${styles.cards}`}>
-              {/* передать сюда массив юзера */}
-                {/* <AddCard/>  */}
+                {currentUserAdds?.map((add) => {
+                    return <AddCard key={add.id} add={add} />
+                  })}
               </div>
             </div>
           </div>
         </main>
-<button type='button' onClick={()=>{getCurrentUserAdds()}}>click</button>
+
   <Footer/>
       </div>
     </div>

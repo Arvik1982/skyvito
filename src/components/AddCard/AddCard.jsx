@@ -10,7 +10,7 @@ import { setCurrentAdd } from '../../store/reducers/sliceAdds'
 export default function AddCard ({add}){  
 const fullDate =  dataFormat(add.created_on)
 const dispatch=useDispatch()
-console.log(add)
+
 return(
 <div key={add.id} className={styles.cards__item}>
                                 <div className={`${styles.cards__card} ${styles.card}`}>

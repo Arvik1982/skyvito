@@ -6,7 +6,8 @@ const sliceAdds = createSlice({
         adds:[],
         currentAdd:[],
         searchString:'',
-        searchResult:[]
+        searchResult:[],
+        currentUserAdds:[],
     },
     reducers:{
         setAdds(state,action){
@@ -18,6 +19,11 @@ const sliceAdds = createSlice({
             localStorage.setItem('currentAdd',JSON.stringify(action.payload))
   
          },
+
+         setCurrentUserAdds(state,action){
+            state.currentUserAdds=action.payload
+            console.log(state.currentUserAdds)},
+            
 
          setSearchData(state,action){
             state.searchString=action.payload
@@ -51,8 +57,8 @@ const sliceAdds = createSlice({
             
             resultArray?state.searchResult=resultArray:state.searchResult=JSON.parse(localStorage.getItem('allAdds'))
          }
-    }
+        }
 })
 
-export const{setAdds, setCurrentAdd, setSearchData}=sliceAdds.actions;
+export const{setAdds, setCurrentAdd, setSearchData, setCurrentUserAdds}=sliceAdds.actions;
 export default sliceAdds.reducer
