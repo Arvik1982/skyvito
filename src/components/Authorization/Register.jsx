@@ -7,7 +7,7 @@ import { getTokens, registration } from '../../api'
 import getInputValue from '../../functions/getInputValue'
 import { setError } from '../../store/reducers/sliceError'
 import createUserUid from '../../functions/createUid'
-import { setUserData} from '../../store/reducers/sliceReg'
+import { setTokenAccess, setUserData} from '../../store/reducers/sliceReg'
 import InputMail from './inputMail'
 import InputPass from './inputPass'
 
@@ -72,10 +72,14 @@ onClick={
     userCity,
     userId
     )
-    .then((data)=>{dispatch(setUserData(data));dispatch(setError(''))})
+    .then((data)=>{
+        console.log(data)
+        localStorage.removeItem('userData');
+        dispatch(setUserData(data));
+        dispatch(setError(''))})
     .then((data)=>{navigate('/profile') 
         return data})
-    .then(()=>{getTokens(userMail,userPassword)
+    .then(()=>{getTokens(userMail,userPassword).then((tokens)=>{dispatch(setTokenAccess(tokens.access_token))})
         .catch((errorData)=>{console.log('test1');
          dispatch(setError(errorData.message))})
     })

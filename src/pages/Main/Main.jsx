@@ -17,11 +17,12 @@ export default function Main() {
   const searchResult = useSelector(state=>state.addsRedux.searchResult)
   const [allAds, setAllAds] = useState([])
   const dispatch =useDispatch()
-  console.log(searchResult)
+  
   
 
   useEffect(() => {
     getAllAds().then((data) => {
+      console.log(data)
       setAllAds(data);
       dispatch(setAdds(data))
     })
@@ -44,6 +45,7 @@ export default function Main() {
               <div className={styles.main__content}>
                 <div className={`${styles.content__cards} ${styles.cards}`}>
                   {allAds.map((add) => {
+                    console.log(add.id)
                     return <AddCard key={add.id} add={add} />
                   })}
                 </div>
