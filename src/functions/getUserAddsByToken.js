@@ -9,9 +9,9 @@ import { setTokenAccess } from '../store/reducers/sliceReg';
 export default function getUserAddsByToken (dispatch){
   
     dispatch(setError(''));
-    getCurrentUserAdds(String(localStorage.getItem('user_token')))
-    .then((data)=>{dispatch(setCurrentUserAdds(data))})
-    .catch(()=>{
+    // getCurrentUserAdds(String(localStorage.getItem('user_token')))
+    // .then((data)=>{dispatch(setCurrentUserAdds(data))})
+    // .catch(()=>{
       
       refreshTokens()
       .then((dataRefresh)=>{dispatch(setError(''));
@@ -20,8 +20,10 @@ export default function getUserAddsByToken (dispatch){
           dataRefresh.access_token:
           String(localStorage.getItem('user_token')))
           .then((data)=>{dispatch(setCurrentUserAdds(data))})
-          .catch(()=>{dispatch(setError('1_Сессия истекла.Перезайдите в приложение'))})
+          .catch(()=>{dispatch(setError('getUserAddsByToken Session истекла.Перезайдите в приложение'))})
         
-        }).catch(()=>{
-          dispatch(setError('2_Сессия истекла.Перезайдите в приложение'))})})
+        }).catch((err)=>{console.log(err.message)
+          dispatch(setError('refreshTokens Session истекла.Перезайдите в приложение'))})
+        // }
+        // )
 }

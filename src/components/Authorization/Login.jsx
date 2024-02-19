@@ -17,6 +17,7 @@ export default function Login(){
     const password=useSelector(state=>state.authRedux.password)
     const error = useSelector(state=>state.errorRedux.error)
     useEffect(()=>{
+        dispatch(setEnterMode('login'))
         dispatch(setError(''))
     },[])
 
@@ -33,12 +34,13 @@ return(
                 onClick={()=>{getTokens(loginName, password)
                     
                     .then((tokens)=>{
-                        console.log(tokens);
-                        console.log(tokens.access_token);
+                        
                         dispatch(setTokenAccess(tokens.access_token))
                         getUserByToken(tokens.access_token)
                         .then((data)=>{
                             localStorage.removeItem('userData');
+                            console.log(data)
+                            console.log('setUserData')
                             dispatch(setUserData(data));
                             
                              navigate('/profile')})

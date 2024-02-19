@@ -1,32 +1,74 @@
 import { useEffect, useState } from 'react'
+import { useDispatch, 
+  // useSelector
+ } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { localHost } from '../../vars/vars'
+import { localHost,
+  // accessToken
+} from '../../vars/vars'
 import styles from './article.module.css'
 import logo from '../../img/logo.png'
 import Header from '../../components/Header/Header'
 import dataFormat from '../../functions/dataformat'
-import { getCurrentComment } from '../../api'
+import { getCurrentComment, getUserByToken, refreshTokens } from '../../api'
 import Footer from'../../components/Footer/Footer'
 import ToMainButton from '../../components/ToMainButton/ToMainButton'
+import PhoneButton from '../../components/PhoneButton/PhoneButton'
+import EditButton from '../../components/EditDellButtons/EditBtn'
+import DeleteButton from '../../components/EditDellButtons/DeleteBtn'
+import { setUserData } from '../../store/reducers/sliceReg'
+// import { setCurrentAdd } from '../../store/reducers/sliceAdds'
+
 
 export default function Article() {
-  const currentAddLocal = JSON.parse(localStorage.getItem('currentAdd'))
+  const currentAddLocal = JSON.parse(localStorage.getItem('currentAdd')) // actual
+  const userId =Number( localStorage.getItem('userUID')) // user before actual
+console.log(currentAddLocal)
+console.log(userId)  
+  
   const [currentAdd] = useState(currentAddLocal)
+  const [displayButtons, setDisplayButtons]=useState(false)
   const [comments, setComments] = useState([])
+  // const [showButtons, setShowButtons] = useState(false)
+  const dispatch = useDispatch()
+
+ const currentAddUserId = currentAdd.user.id
+ const postId=currentAdd.id
+
+
+// = useSelector(state=>state.authRedux.userData.id)
+
+
 
   useEffect(() => {
+    !userId||!currentAddUserId?setDisplayButtons(true):'';
+    // setShowButtons(true)
+    refreshTokens().catch((err)=>{console.log(err)}).then((tokens)=>{ 
+
+      getUserByToken(tokens.access_token)
+      .then((data)=>{
+        console.log(data)
+                              console.log('setUserData 7')
+        dispatch(setUserData(data));
+        setDisplayButtons(true)})
+      .catch((err)=>{console.log(err)})
+
+    })
+
     getCurrentComment(currentAdd.id).then((data) => {
+      
       let dataArray = []
       dataArray = data
       setComments(dataArray)
-    })
+    }).catch((err)=>{console.log(err)})
   }, [])
-
+  console.log(currentAddUserId)
+  console.log(userId)
   
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
-        <Header noDisplay={false} />
+        <Header postId={postId} noDisplay={false} />
 
         <main className={styles.main}>
           <div className={styles.main__container}>
@@ -118,14 +160,17 @@ export default function Article() {
                   </div>
 {/* comments */}
                   <p className={styles.article__price}>{currentAdd.price}</p>
-                  <button
-                    type="button"
-                    className={`${styles.article__btn} ${styles.btn_hov02}`}
-                  >
-                    Показать&nbsp;телефон <br />
-                    <span> {currentAdd.user.phone}</span> <br />
-                    <span>8&nbsp;905&nbsp;ХХХ&nbsp;ХХ&nbsp;ХХ</span>
-                  </button>
+                  {displayButtons&&<>
+                  
+                  {currentAddUserId===userId&& <div
+                    // key={showButtons}
+                     className={styles.button__block_edit}> 
+                  <EditButton />
+                  <DeleteButton postId={postId} />
+                  </div> }
+                  {currentAddUserId!==userId&& 
+                  <PhoneButton phone={currentAdd.user.phone}/>}
+                  </>}
                   <div className={`${styles.article__author} ${styles.author}`}>
                     <div className={styles.author__img}>
                       <Link to='/seller'>
@@ -168,7 +213,6 @@ export default function Article() {
             </div>
           </div>
         </main>
-
         <Footer/>
       </div>
     </div>

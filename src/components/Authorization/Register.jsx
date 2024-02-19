@@ -1,4 +1,4 @@
-
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import styles from'./register.module.css'
@@ -10,6 +10,7 @@ import createUserUid from '../../functions/createUid'
 import { setTokenAccess, setUserData} from '../../store/reducers/sliceReg'
 import InputMail from './inputMail'
 import InputPass from './inputPass'
+
 
 export default function Register(){
 
@@ -24,8 +25,13 @@ export default function Register(){
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
+  useEffect(()=>{
+    dispatch(setError(''))
+  },[])
   
 return(
+
+    
 
 <form className={styles.modal__form_login} id="formLogUp" action="#">
 <div className={styles.modal__logo}>
@@ -75,6 +81,8 @@ onClick={
     .then((data)=>{
         console.log(data)
         localStorage.removeItem('userData');
+        console.log(data)
+        console.log('setUserData 2')
         dispatch(setUserData(data));
         dispatch(setError(''))})
     .then((data)=>{navigate('/profile') 

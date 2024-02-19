@@ -30,9 +30,14 @@ export default  function uploadImg(token,file,id,imgUploadForms){
     {if(!response.ok){throw new Error('Недопустимый формат файла')};
     return response.json()})
  }
-sendImg(data1).catch((er)=>{console.log(er.message)})
-sendImg(data2).catch((er)=>{console.log(er.message)})
-sendImg(data3).catch((er)=>{console.log(er.message)})
-sendImg(data4).catch((er)=>{console.log(er.message)})
-sendImg(data5).catch((er)=>{console.log(er.message)}) 
+
+imgUploadForms[0].img?sendImg(data1).catch((er)=>{console.log(er.message)}):''
+
+imgUploadForms[1].img?sendImg(data2).catch((er)=>{console.log(er.message)}):''
+
+imgUploadForms[2].img?sendImg(data3).catch((er)=>{console.log(er.message)}):''
+
+imgUploadForms[3].img?sendImg(data4).catch((er)=>{console.log(er.message)}):''
+
+imgUploadForms[4].img?sendImg(data5).catch((er)=>{console.log(er.message)}):''
 }

@@ -73,9 +73,11 @@ const regSlice = createSlice({
             
         },
         setUserData(state,action){
+            console.log(action.payload)
             state.userData=action.payload
             let userUid; 
             action.payload!==null? userUid = action.payload.id:userUid = ''
+           console.log(userUid)
             localStorage.setItem('userUID', userUid)
             localStorage.setItem('userData', JSON.stringify(action.payload))
                 

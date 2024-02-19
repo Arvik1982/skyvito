@@ -123,7 +123,7 @@ export async function getUserByToken(token) {
 export async function refreshTokens() {
   try {
     console.log('refresh')
-    
+    console.log(localStorage.getItem('user_token'))
     const token = localStorage.getItem('user_token')
     const refresh = localStorage.getItem('user_token_refresh')
     
@@ -137,12 +137,19 @@ export async function refreshTokens() {
         'content-type': 'application/json',
       },
     })
-    if (!responseRefresh.ok) {
+    
+    
+      if (!responseRefresh.ok && responseRefresh.status!==401 ) {
+        const errResponse = await responseRefresh.json()
+        throw new Error(errResponse?.detail)
+  
+      }
 
-      const errResponse = await responseRefresh.json()
-      throw new Error(errResponse?.detail)
+      if (!responseRefresh.ok && responseRefresh.status===401 ) {
+        console.log('токены не требуют обновления')
+      }
+    
 
-    }
 
     const dataRefresh = await responseRefresh.json()
 
@@ -155,7 +162,6 @@ export async function refreshTokens() {
     return dataRefresh
 
   } catch (error) {
-    
     throw new Error(error)
   }
 }
@@ -202,8 +208,8 @@ export async function changeUser(accessTokenNew, userNewData) {
     },
   })
   if (!currentUserAddsResp.ok) {
-
   const currentUserAdds= await currentUserAddsResp.json()
+
   console.log(currentUserAdds)
   throw new Error(currentUserAdds?.detail)
 

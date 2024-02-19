@@ -20,7 +20,8 @@ export default function Profile() {
 const navigate=useNavigate()  
   const dispatch = useDispatch()
   const error = useSelector((state) => state.errorRedux.error)
-  const userDataRedux = useSelector((state) => state.authRedux.userData) //  получить массив юзера и передать в AddCard
+  const userDataRedux = useSelector((state) => state.authRedux.userData);
+  const newPostLoadsSuccess = useSelector((state) => state.addsRedux.newPostLoadSuccess) 
   const userData = checkLoginStatus(userDataRedux)
   const currentUserAdds = useSelector((state) => state.addsRedux.currentUserAdds)
   const [userPhone, setUserPhone] = useState(userData.phone ? userData.phone : '')
@@ -44,16 +45,19 @@ const navigate=useNavigate()
       labelName:'Город'
     },
   ]
-
+console.log(newPostLoadsSuccess)
   
   useEffect(() => {
     dispatch(setUserTmpPhone(userPhone))
   }, [userPhone])
 
   useEffect(() => {
+    console.log('user posts refreshed')
     getUserAddsByToken(dispatch)
     if(userData.name==='No_User'){navigate('/login')}
-  }, [])
+  }, [newPostLoadsSuccess])
+
+ 
 
   return (
     <div className={styles.wrapper}>
