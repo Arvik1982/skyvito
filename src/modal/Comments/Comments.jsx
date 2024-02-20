@@ -3,16 +3,16 @@ import { useState } from 'react';
 import styles from './Comments.module.css'
 import { localHost } from '../../vars/vars';
 import createComment from './createComment';
-import { refreshTokens } from '../../api';
+import { getCurrentComment, refreshTokens } from '../../api';
 
 
 export default function Comments({ commentsOpen, setCommentsOpen, comments, 
-    // setComments,
+    setComments,
     postId }) {
     console.log(postId)
     console.log(comments)
 const [commentText, setCommentText]=useState('')
-
+const currentAdd= JSON.parse(localStorage.getItem('currentAdd'))
 
   return (
     <div 
@@ -51,6 +51,12 @@ const [commentText, setCommentText]=useState('')
                     refreshTokens().then((tokens)=>{
                     createComment(tokens.access_token, commentText).then((data)=>{
                     console.log(data);
+                    getCurrentComment(currentAdd.id).then((dataComments) => {
+      
+                        let dataArray = []
+                        dataArray = dataComments
+                        setComments(dataArray)
+                      })
                     // setComments(data)
                 })})}}
               type='button'
