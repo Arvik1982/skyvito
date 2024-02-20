@@ -7,8 +7,7 @@ export default function PhoneButton({phone}){
     const [displayNumber, setDisplayNumber]=useState(false)
 
     let numberPart;
-    console.log(String(phone).slice(0,1))
-    
+        
     if (String(phone).slice(0,1)==='+'){
         numberPart=String(phone).slice(1,4)
     }else{

@@ -49,13 +49,13 @@ export default function CreatePost({editMode, postId}) {
     {id:4, img:'', src:'' },])
  
     useEffect(()=>{
-      
-    if(price||priceEdit && title||titleEdit && description||descriptionEdit){
-      console.log(price)
-      console.log(descriptionEdit)
-
-      dispatch(setNewPostReady(true))}
-      },[price, title, description])
+    if(price||priceEdit){ 
+      if(title||titleEdit){
+        if(description||descriptionEdit){dispatch(setNewPostReady(true))
+        }else{dispatch(setNewPostReady(false))} }
+      else{dispatch(setNewPostReady(false))}}    
+    else{dispatch(setNewPostReady(false))}},
+    [price,priceEdit, title,titleEdit, description,descriptionEdit])
 
 useEffect(()=>{
 newData?setNewData(false):setNewData(true)
@@ -67,16 +67,23 @@ imgUploadForms.forEach((el)=>{
 },[src])
 
   return (
-    <div key={newData} className={styles.modal__block}>
+    
+    <div 
+    
+    key={newData} 
+    className={styles.modal__block}>
       <div
       
-      onKeyDown={(e)=>{e.stopPropagation()}}
       onClick={(e)=>{e.stopPropagation()}}
       className={styles.modal__content}>
         <h3 className={styles.modal__title}>{formName}</h3>
+        
         <div className={styles.modal__btn_close}>
-          <div onKeyDown={()=>{dispatch(setCreateAddStatus(false))}}
-            onClick={() => {dispatch(setNewPostReady(false));dispatch(setCreateAddStatus(false))}}
+          <div 
+          
+            onClick={(e) => {e.stopPropagation()
+              dispatch(setCreateAddStatus(false))
+              dispatch(setNewPostReady(false));}}
             className={styles.modal__btn_close_line}
           />
         </div>
@@ -113,19 +120,27 @@ imgUploadForms.forEach((el)=>{
           </div>
           <div className={styles.form_newArt__block}>
             <p className={styles.form_newArt__p}>
-              Фотографии товара<span>не более 5 фотографий</span>
+              Фотографии товара
+              <span >не более 5 фотографий</span>
             </p>
-            <div className={styles.form_newArt__bar_img}>
+            <div  
+             className={styles.form_newArt__bar_img}>
               {imgUploadForms.map((el)=>{
                 return(
-                  <ImgUploadForm 
+                  <ImgUploadForm
+                  key={ 
+                    Math.round(Math.random()*1000000)
+                  }
+
                   file={file} 
                   setFile={setFile} 
                   src={el.src} 
                   setSrc={setSrc}
                   id={el.id}
                   imgUploadForms={imgUploadForms}
-                  setImgNumber={setImgNumber} />)
+                  setImgNumber={setImgNumber}
+                  editMode={editMode}
+                  currentAdd={currentAdd} />)
               })
               }
               
@@ -137,13 +152,14 @@ imgUploadForms.forEach((el)=>{
           <label
             htmlFor="price">Цена</label>
             <input
-             value={editMode?priceEdit:price}
-             onChange={(e)=>{editMode?setPriceEdit(e.target.value):setPrice(e.target.value)}}
+            value={editMode?priceEdit:price}
+            onChange={(e)=>{editMode?setPriceEdit(e.target.value):setPrice(e.target.value)}}
             className={styles.form_newArt__input_price}
             type="number"
             name="price"
             id="formName"
           />
+          
           <div className={styles.form_newArt__input_price_cover} />
             <UploadButton 
             postId={postId}

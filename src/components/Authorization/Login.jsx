@@ -39,8 +39,7 @@ return(
                         getUserByToken(tokens.access_token)
                         .then((data)=>{
                             localStorage.removeItem('userData');
-                            console.log(data)
-                            console.log('setUserData')
+                            
                             dispatch(setUserData(data));
                             
                              navigate('/profile')})

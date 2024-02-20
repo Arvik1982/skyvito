@@ -45,15 +45,14 @@ const navigate=useNavigate()
       labelName:'Город'
     },
   ]
-console.log(newPostLoadsSuccess)
+
   
   useEffect(() => {
     dispatch(setUserTmpPhone(userPhone))
   }, [userPhone])
 
   useEffect(() => {
-    console.log('user posts refreshed')
-    getUserAddsByToken(dispatch)
+       getUserAddsByToken(dispatch)
     if(userData.name==='No_User'){navigate('/login')}
   }, [newPostLoadsSuccess])
 
@@ -90,7 +89,7 @@ console.log(newPostLoadsSuccess)
                   </h3>
                   <div
                     className={`${styles.profile__settings} ${styles.settings}`}
-                  >{console.log(userData)}
+                  >
                     <ChangeAvatar avatar={userData.avatar} />
 
                     <div className={styles.settings__right}>

@@ -1,9 +1,11 @@
 import styles from'./sellerinfo.module.css'
 import { localHost } from '../../vars/vars'
 import logo from'../../img/logo.png'
+import PhoneButton from '../PhoneButton/PhoneButton'
 
 export default function SellerInfo({seller}){
-    console.log(seller)
+  
+    
     return(
         <div className={`${styles.main__profile_sell} ${styles.profile_sell}`}>
                 <div className={styles.profile_sell__content}>
@@ -11,7 +13,7 @@ export default function SellerInfo({seller}){
                     <div className={styles.seller__left}>
                       <div className={styles.seller__img}>
                         {/* <a href="" target="_self"> */}
-                          <img src={seller?.avatar
+                          <img className={styles.seller__avatar} src={seller?.avatar
                             ? `${localHost}${seller.avatar}`
                             : `${logo}`} alt="" />
                         {/* </a> */}
@@ -28,10 +30,11 @@ export default function SellerInfo({seller}){
                           {/* </a> */}
                         </div>
                       </div>
-                      <button type='button' className={`${styles.seller__btn} ${styles.btn_hov02}`}>
+                      <PhoneButton phone={seller.phone}/>
+                      {/* <button type='button' className={`${styles.seller__btn} ${styles.btn_hov02}`}>
                         Показать&nbsp;телефон
                         <span>8&nbsp;905&nbsp;ХХХ&nbsp;ХХ&nbsp;ХХ</span>
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 </div>

@@ -11,10 +11,13 @@ const sliceAdds = createSlice({
         createAdd:false,
         newPostReady:false,
         newPostLoadSuccess:false,
-        editMode:false
+        editMode:false,
+       
         
     },
     reducers:{
+
+       
 
         setEditMode(state,action){
             
@@ -53,7 +56,7 @@ const sliceAdds = createSlice({
 
          setCurrentUserAdds(state,action){
             state.currentUserAdds=action.payload
-            console.log(state.currentUserAdds)},
+           },
             
 
          setSearchData(state,action){

@@ -40,8 +40,7 @@ export default function ChangeAvatar({ avatar }) {
                     )
                       .then((data) => {
                         localStorage.removeItem('userData')
-                        console.log(data)
-                            console.log('setUserData 3')
+                        
                         dispatch(setUserData(data))
                       })
 

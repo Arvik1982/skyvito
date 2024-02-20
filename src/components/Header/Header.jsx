@@ -26,19 +26,18 @@ export default function Header({ noDisplay, page,postId }) {
 
   return (
     <header
-      onKeyDown={() => {
+    
+        onClick={(e) => {
+        e.stopPropagation()
         closeModal(dispatch, createAddStatus)
       }}
-      onClick={() => {
-        
-        closeModal(dispatch, createAddStatus)
-      }}
+      onMouseUp={()=>{}}
       className={styles.header}
     >
       <nav className={styles.header__nav}>
         <button
           type="button"
-          onClick={() => {
+          onClick={(e) => { e.stopPropagation()
             dispatch(setNewPostReady(false));
             dispatch(setEditMode(false));
             createAddStatus

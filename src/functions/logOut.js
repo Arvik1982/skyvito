@@ -9,8 +9,6 @@ export default function logout(dispatch, navigate){
     localStorage.removeItem('user_token')
     localStorage.removeItem('user_token_refresh')
     localStorage.removeItem('currentAdd')
-    
-                            console.log('setUserData 6')
     dispatch(setUserData(''))
     dispatch(setCurrentAdd(''))
     dispatch(setCurrentUserAdds([]))

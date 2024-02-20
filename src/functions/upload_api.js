@@ -2,11 +2,9 @@ import { accessToken, localHost } from '../vars/vars'
 
 export default function uploadImage(file, token, route) {
  
-  console.log('uploadImage')
-  console.log(token)
+  
   let actualToken
   token ? (actualToken = token) : (actualToken = accessToken)
-  console.log(actualToken)
   const data = new FormData()
   data.append('file', file)
 

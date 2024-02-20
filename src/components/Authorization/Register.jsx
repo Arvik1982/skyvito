@@ -79,20 +79,18 @@ onClick={
     userId
     )
     .then((data)=>{
-        console.log(data)
+        
         localStorage.removeItem('userData');
-        console.log(data)
-        console.log('setUserData 2')
+        
         dispatch(setUserData(data));
         dispatch(setError(''))})
     .then((data)=>{navigate('/profile') 
         return data})
     .then(()=>{getTokens(userMail,userPassword).then((tokens)=>{dispatch(setTokenAccess(tokens.access_token))})
-        .catch((errorData)=>{console.log('test1');
+        .catch((errorData)=>{
          dispatch(setError(errorData.message))})
     })
-    .catch((errorData)=>{console.log('test2'); 
-    console.log(errorData.message); 
+    .catch((errorData)=>{    
     dispatch(setError(errorData.message))
 })
 

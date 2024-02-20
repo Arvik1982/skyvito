@@ -10,7 +10,6 @@ import { setError } from "../../store/reducers/sliceError"
 export default function AuthorizationPage(){
 const dispatch = useDispatch()
 const enterMode =useSelector(state=>state.authRedux.enterMode)
-console.log(enterMode)
 const [authMode, setAuthMode]= useState('login')
 
 useEffect(()=>{

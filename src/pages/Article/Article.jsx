@@ -18,13 +18,12 @@ import EditButton from '../../components/EditDellButtons/EditBtn'
 import DeleteButton from '../../components/EditDellButtons/DeleteBtn'
 import { setUserData } from '../../store/reducers/sliceReg'
 // import { setCurrentAdd } from '../../store/reducers/sliceAdds'
+import Comments from '../../modal/Comments/Comments'
 
 
 export default function Article() {
   const currentAddLocal = JSON.parse(localStorage.getItem('currentAdd')) // actual
   const userId =Number( localStorage.getItem('userUID')) // user before actual
-console.log(currentAddLocal)
-console.log(userId)  
   
   const [currentAdd] = useState(currentAddLocal)
   const [displayButtons, setDisplayButtons]=useState(false)
@@ -34,7 +33,7 @@ console.log(userId)
 
  const currentAddUserId = currentAdd.user.id
  const postId=currentAdd.id
-
+const [commentsOpen, setCommentsOpen]= useState(false)
 
 // = useSelector(state=>state.authRedux.userData.id)
 
@@ -47,8 +46,6 @@ console.log(userId)
 
       getUserByToken(tokens.access_token)
       .then((data)=>{
-        console.log(data)
-                              console.log('setUserData 7')
         dispatch(setUserData(data));
         setDisplayButtons(true)})
       .catch((err)=>{console.log(err)})
@@ -62,9 +59,7 @@ console.log(userId)
       setComments(dataArray)
     }).catch((err)=>{console.log(err)})
   }, [])
-  console.log(currentAddUserId)
-  console.log(userId)
-  
+   
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
@@ -83,12 +78,13 @@ console.log(userId)
             </div>
           </div>
 
-          <div className={`${styles.main__artic} ${styles.artic}`}>
-            <div className={`${styles.artic__content} ${styles.article}`}>
-              <div className={styles.article__left}>
-                <div className={styles.article__fill_img}>
-                  <div className={styles.article__img}>
-                    <img
+          <div   className={`${styles.main__artic} ${styles.artic}`}>
+            <div  className={`${styles.artic__content} ${styles.article}`}>
+              <div  className={styles.article__left}>
+                <div  className={styles.article__fill_img}>
+                  <div  className={styles.article__img}>
+                    
+                    <img 
                       src={
                         currentAdd.images[0]?.url
                           ? `${localHost}${currentAdd.images[0]?.url} `
@@ -97,11 +93,16 @@ console.log(userId)
                       alt="element"
                     />
                   </div>
-                  <div className={styles.article__img_bar}>
+                  <div 
+                  
+                   className={styles.article__img_bar}>
                     {currentAdd.images.map((el) => {
                       return (
-                        <div className={styles.article__img_bar_div}>
-                          <img
+                        <div key={Math.round(Math.random()*100000)}   
+                        className={styles.article__img_bar_div}>
+                         
+                          <img className={styles.img__line}
+                           key={Math.round(Math.random()*10000)}
                             src={el?.url ? `${localHost}${el?.url}` : `${logo}`}
                             alt="element"
                           />
@@ -109,14 +110,15 @@ console.log(userId)
                       )
                     })}
                   </div>
-                  <div className={`${styles.article__img_bar_mob}`}>
+                  <div key={Math.round(Math.random()*1000)} className={`${styles.article__img_bar_mob}`}>
                     {currentAdd.images.map((el) => {
                       return (
-                        <div
+                        <div key={Math.round(Math.random()*100)}
                           className={`${styles.img_bar_mob__circle} ${styles.circle_active}`}
                         >
-                          <img
-                            className={styles.img_bar_mob__circle}
+                          <img 
+                             key={Math.round(Math.random()*10)}
+                            className={`${styles.img_bar_mob__circle}`}
                             src={el?.url ? `${localHost}${el?.url}` : `${logo}`}
                             alt="element"
                           />
@@ -138,20 +140,27 @@ console.log(userId)
                     <p className={styles.article__city}>
                       {currentAdd.user.city}
                     </p>
-                    <a
-                      className={styles.article__link}
-                      href=""
-                      target="_blank"
-                      // rel="#"
+                    <span 
+                      style={{cursor:'pointer', color:'#0080C1', textDecoration:'underline'}}
+                      onClick={()=>{setCommentsOpen(true)}}
+                      // className={styles.article__link}
+                     
                     >
                       {comments.length}
-                    </a>
+                    </span>
                   </div>
 {/* comments */}
+          <Comments 
+          setComments={setComments} 
+          commentsOpen={commentsOpen} 
+          setCommentsOpen={setCommentsOpen} 
+          comments={comments}
+          commentId={postId}/>
+          
                   <div className={`${styles.comments__list} ${styles.comments_visible}`}>
                   {comments.map((el) => {
                       return (
-                        <div>
+                        <div key={el.id}>
                           <h2>-{el.author.name}</h2>
                           <h3>{el.text}</h3>
                         </div>
@@ -174,7 +183,7 @@ console.log(userId)
                   <div className={`${styles.article__author} ${styles.author}`}>
                     <div className={styles.author__img}>
                       <Link to='/seller'>
-                      <img
+                      <img className={styles.seller__avatar}
                         src={
                           currentAdd.user?.avatar
                             ? `${localHost}${currentAdd.user.avatar}`

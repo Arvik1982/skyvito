@@ -61,7 +61,7 @@ export async function registration(email, password, name, surname, city, id) {
       throw new Error(err)
     }
     const newUser = await response.json()
-    console.log(newUser)
+    
     return newUser
   } catch (error) {
     throw new Error(error.message)
@@ -122,8 +122,7 @@ export async function getUserByToken(token) {
 
 export async function refreshTokens() {
   try {
-    console.log('refresh')
-    console.log(localStorage.getItem('user_token'))
+    
     const token = localStorage.getItem('user_token')
     const refresh = localStorage.getItem('user_token_refresh')
     
@@ -154,7 +153,7 @@ export async function refreshTokens() {
     const dataRefresh = await responseRefresh.json()
 
     if (dataRefresh.access_token && dataRefresh.access_token) {
-      console.log('tokens renewed')
+      
       localStorage.setItem('user_token', dataRefresh.access_token)
       localStorage.setItem('user_token_refresh', dataRefresh.refresh_token)
     }
@@ -193,9 +192,7 @@ catch(error){
 }
 
 export async function changeUser(accessTokenNew, userNewData) {
-  console.log(typeof(userNewData.email))
-  console.log(userNewData.email)
-  console.log(userNewData)
+
   try{
   const currentUserAddsResp = await fetch('http://127.0.0.1:8090/user', {
     method: 'PATCH',
@@ -210,12 +207,12 @@ export async function changeUser(accessTokenNew, userNewData) {
   if (!currentUserAddsResp.ok) {
   const currentUserAdds= await currentUserAddsResp.json()
 
-  console.log(currentUserAdds)
+ 
   throw new Error(currentUserAdds?.detail)
 
   }
   const userAdds = await currentUserAddsResp.json()
-  console.log(userAdds)
+  
   return userAdds
 }
 catch(error){
