@@ -12,11 +12,21 @@ const sliceAdds = createSlice({
         newPostReady:false,
         newPostLoadSuccess:false,
         editMode:false,
+        searchButtonClick:false,
+        imageRef:'',
+        imageRefId:'',
+        imgDeleted:false
        
         
     },
     reducers:{
 
+      setImgDeleted(state,action){
+         
+         state.imgDeleted=action.payload
+         
+         
+     },
        
 
         setEditMode(state,action){
@@ -86,11 +96,29 @@ const sliceAdds = createSlice({
 
                 ||String(searchStr).toLowerCase()
                 .includes(String(el.title).split(' ').join('').toLowerCase())
-                )
+                )         
+        
             })
             
             resultArray?state.searchResult=resultArray:state.searchResult=JSON.parse(localStorage.getItem('allAdds'))
+         },
+
+         setSearchButtonClick(state,action){
+            
+            
+            state.searchButtonClick=action.payload
+             
+         },
+
+         setImageRef(state,action){
+            state.imageRef=action.payload
+             
+         },
+         setImageRefId(state,action){
+            state.imageRefId=action.payload
+             
          }
+
         }
 })
 
@@ -102,5 +130,10 @@ export const{setAdds,
        setNewPostImg,
        setNewPostReady,
        setNewPostLoadSuccess,
-    setEditMode}=sliceAdds.actions;
+    setEditMode, 
+    setSearchButtonClick,
+    setImageRef,
+    setImageRefId,
+    setImgDeleted
+}=sliceAdds.actions;
 export default sliceAdds.reducer

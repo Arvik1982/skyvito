@@ -19,6 +19,9 @@ export default function UploadButton({
   postId
 }){
 
+  const userAssessTokenRedux = useSelector((state) => state.authRedux.access_token);
+  const userRefreshTokenRedux = useSelector((state) => state.authRedux.access_refresh);
+
   const navigate =useNavigate()
   const dispatch=useDispatch()
   const newPostReady = useSelector((state) => state.addsRedux.newPostReady); 
@@ -32,18 +35,18 @@ export default function UploadButton({
         disabled={newPostReady?false:true}
         onClick={(e)=>{e.stopPropagation()
          
-          dispatch(setNewPostReady(false));
-          refreshTokens()
+          // dispatch(setNewPostReady(false));
+          refreshTokens(userAssessTokenRedux, userRefreshTokenRedux)
               .then((tokens)=>{ 
                 dispatch(setNewPostLoadSuccess(false));
                    uploadTxt(tokens.access_token,title,description,price)  
                    .then((txtData)=>{
-                    uploadImg(tokens.access_token,file,txtData.id,imgUploadForms)})
+                    uploadImg(tokens.access_token,file,txtData.id,imgUploadForms,dispatch)})
                     .catch((errTxt)=>{console.log(errTxt)})})
                     .then(()=>{
                       dispatch(setNewPostLoadSuccess(true));
                       dispatch(setCreateAddStatus(false))})
-                    .then(()=>{navigate('/profile')})
+                    .then(()=>{navigate('/profile');dispatch(setNewPostReady(false))})
                     .catch((errTokens)=>{console.log(errTokens)})
          }}
           type="button"
@@ -60,18 +63,23 @@ export default function UploadButton({
         {editMode && 
         
         <>
-        {!newPostReady&&<h2 style={{marginTop:'5px', color:'red', fontSize:'15px' }}> Заполните данные формы </h2>}
+        {!newPostReady&&<h2 style={{marginTop:'5px', color:'red', fontSize:'15px' }}>
+
+           Заполните данные формы </h2>}
+
         <button
         disabled={newPostReady?false:true}
         onClick={(e)=>{ e.stopPropagation()
           
           dispatch(setNewPostReady(false));
-          refreshTokens()
+          refreshTokens(userAssessTokenRedux, userRefreshTokenRedux)
               .then((tokens)=>{ 
                 dispatch(setNewPostLoadSuccess(false));
                 changeTxt(tokens.access_token,title,description,price,postId)
                  .then((txtData)=>{
-                 uploadImg(tokens.access_token,file,txtData.id,imgUploadForms)}
+                 uploadImg(tokens.access_token,file,txtData.id,imgUploadForms,dispatch)
+                
+                }
                     ).catch((errTxt)=>{console.log(errTxt)})})
                     .then(()=>{
                     dispatch(setNewPostLoadSuccess(true));
@@ -84,7 +92,7 @@ export default function UploadButton({
             newPostReady?`${styles.form_newArt__btn_pub_ready} ${styles.btn_hov02}`:
             `${styles.form_newArt__btn_pub} `}
           id="btnPublish"
-        >Изменить
+        >Сохранить изменения
         </button>
         </>
          }

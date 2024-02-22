@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setUserData } from '../../store/reducers/sliceReg'
 import { localHost } from '../../vars/vars'
 import styles from '../../pages/Profile/profile.module.css'
@@ -8,6 +8,10 @@ import { refreshTokens } from '../../api'
 import { setError } from '../../store/reducers/sliceError'
 
 export default function ChangeAvatar({ avatar }) {
+
+  const userAssessTokenRedux = useSelector((state) => state.authRedux.access_token);
+  const userRefreshTokenRedux = useSelector((state) => state.authRedux.access_refresh);
+
   const realUpload = useRef(null)
   const dispatch = useDispatch()
 
@@ -23,15 +27,8 @@ export default function ChangeAvatar({ avatar }) {
           style={{ display: 'none' }}
           type="file"
           onChange={(event) => {
-// uploadImage(event.target.files[0], undefined, 'user/avatar')
-            //   .then((data) => {
-            //     console.log('change avatar')
-            //     console.log(data)
-            //     localStorage.removeItem('userData')
-            //     dispatch(setUserData(data))
-            //   })
-// .catch(() => {
-                refreshTokens()
+
+                refreshTokens(userAssessTokenRedux,userRefreshTokenRedux)
                   .then((tokens) => {
                     uploadImage(
                       event.target.files[0],
@@ -40,10 +37,8 @@ export default function ChangeAvatar({ avatar }) {
                     )
                       .then((data) => {
                         localStorage.removeItem('userData')
-                        
                         dispatch(setUserData(data))
                       })
-
                       .catch((err) => {
                         console.log(err)
                         dispatch(
@@ -61,7 +56,7 @@ export default function ChangeAvatar({ avatar }) {
                       ),
                     )
                   })
-// })
+
           }}
           className={styles.settings__change_photo}
           href=""

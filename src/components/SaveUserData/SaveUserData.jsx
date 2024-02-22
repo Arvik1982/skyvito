@@ -1,5 +1,5 @@
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styles from '../../pages/Profile/profile.module.css'
 import { changeUser, refreshTokens } from '../../api'
@@ -15,11 +15,15 @@ export default function SaveUserData(){
     const userTmpSurName = useSelector(state=>state.authRedux.userTmpSurName)
     const userTmpCity = useSelector(state=>state.authRedux.userTmpCity)
     const userTmpPhone = useSelector(state=>state.authRedux.userTmpPhone)
-   
     const accessTokenRedux = useSelector((state) => state.authRedux.access_token)
+    const userRefreshTokenRedux = useSelector((state) => state.authRedux.access_refresh);
     const userMail = useSelector((state) => state.authRedux.userMail)
-  
     const [accessTokenNew,setAccessTokenNew]=useState(accessTokenRedux)
+    const [processOn,setProcessOn]=useState(false)
+
+    useEffect(()=>{
+      accessTokenRedux? setAccessTokenNew(accessTokenRedux):setAccessTokenNew(accessToken)
+     },[])
 
     function saveDataChanges(){
     let email;
@@ -33,28 +37,30 @@ export default function SaveUserData(){
     role:"string",
     surname:String(userTmpSurName)
     }
-    
-    accessTokenRedux? setAccessTokenNew(accessTokenRedux):setAccessTokenNew(accessToken)
+
+  
+      accessTokenRedux? setAccessTokenNew(accessTokenRedux):setAccessTokenNew(accessToken)
 
    
 if(toSend){
     changeUser(accessTokenNew,toSend)
     .then((data)=>{dispatch(setError(''));
+    setProcessOn(false);
     localStorage.removeItem('userData');
        dispatch(setUserData(data))})
     .catch(()=>{
-      refreshTokens()
+      refreshTokens(accessTokenRedux,userRefreshTokenRedux)
       .then((tokens)=>{
         dispatch(setError(''));
        
         changeUser(tokens.access_token,toSend)
         .then((data)=>{
           localStorage.removeItem('userData');
-           dispatch(setUserData(data))
-        }).catch((newError)=>{console.log(newError);
+           dispatch(setUserData(data));setProcessOn(false)
+        }).catch((newError)=>{console.log(newError);setProcessOn(false);
           dispatch(setError('3_save_data_changes_Сессия истекла. Перезайдите в приложение'))})
       })
-        .catch((newErr)=>{console.log(newErr);    
+        .catch((newErr)=>{console.log(newErr); setProcessOn(false);   
          dispatch(setError('2_save_data_changes_Сессия истекла. Перезайдите в приложение'))})
     })
   }}
@@ -62,12 +68,12 @@ if(toSend){
 
     return(
         <button
-        onClick={()=>{saveDataChanges()}}
+        onClick={()=>{setProcessOn(true);saveDataChanges()}}
         type="button"
         className={`${styles.settings__btn} ${styles.btn_hov02}`}
         id="settings-btn"
       >
-        Сохранить
+        {processOn?'Сохраняем...':'Сохранить'}
       </button>
     )
 }

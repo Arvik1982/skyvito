@@ -14,14 +14,14 @@
     margin: 0 auto;
     padding: 31px 10px 0px;
   }
-  .search__logo_mob_link {
+  /* .search__logo_mob_link {
     display: none;
   }
   
   .search__logo_img {
     width: 54px;
     height: auto;
-  }
+  } */
   
   .search__form {
     margin-left: 60px;
@@ -99,6 +99,10 @@
     line-height: 24px;
     color: #FFFFFF;
   }
+
+  .btn_hov02:hover {
+    background-color: #0080C1;
+  }
   @media screen and (max-width: 590px) {
     .main__search {
         width: 100%;
@@ -113,7 +117,7 @@
         top: 0;
         z-index: 3;
       }
-      .search__logo-mob-link {
+      /* .search__logo-mob-link {
         display: block;
         width: 32px;
         height: 32px;
@@ -127,7 +131,7 @@
         display: block;
         -o-object-fit: cover;
            object-fit: cover;
-      }
+      } */
       .search__form {
         margin-left: 10px;
         max-width: 1044px;

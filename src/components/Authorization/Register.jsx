@@ -7,7 +7,7 @@ import { getTokens, registration } from '../../api'
 import getInputValue from '../../functions/getInputValue'
 import { setError } from '../../store/reducers/sliceError'
 import createUserUid from '../../functions/createUid'
-import { setTokenAccess, setUserData} from '../../store/reducers/sliceReg'
+import { setTokenAccess, setTokenRefresh, setUserData} from '../../store/reducers/sliceReg'
 import InputMail from './inputMail'
 import InputPass from './inputPass'
 
@@ -20,8 +20,8 @@ export default function Register(){
   const userName = useSelector(state=>state.authRedux.userName)
   const userSurName = useSelector(state=>state.authRedux.userSurName)
   const userCity= useSelector(state=>state.authRedux.userCity)
-  const error= useSelector(state=>state.errorRedux.error)
-  const userId=createUserUid()
+  const error = useSelector(state=>state.errorRedux.error)
+  const userId = createUserUid()
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -30,9 +30,7 @@ export default function Register(){
   },[])
   
 return(
-
     
-
 <form className={styles.modal__form_login} id="formLogUp" action="#">
 <div className={styles.modal__logo}>
     <img src={logoModal} alt="logo"/>
@@ -68,8 +66,10 @@ id="city"
 placeholder="Город (необязательно)"/>
 {error&&<div style={{color:'red', position:'absolute', bottom:'17%', marginBottom:'8px'}}>{error}</div>}
 <button 
-onClick={
-    ()=>{userPassword!==userPassword2?dispatch(setError('Пароли не совпадают')):
+onClick={()=>{
+    
+    userPassword!==userPassword2?
+    dispatch(setError('Пароли не совпадают')):
     registration(
     userMail,
     userPassword,     
@@ -81,18 +81,24 @@ onClick={
     .then((data)=>{
         
         localStorage.removeItem('userData');
-        
         dispatch(setUserData(data));
         dispatch(setError(''))})
-    .then((data)=>{navigate('/profile') 
-        return data})
-    .then(()=>{getTokens(userMail,userPassword).then((tokens)=>{dispatch(setTokenAccess(tokens.access_token))})
-        .catch((errorData)=>{
-         dispatch(setError(errorData.message))})
+    
+    .then((data)=>{
+        getTokens(userMail,userPassword)
+        .then((tokens)=>{
+            dispatch(setTokenAccess(tokens.access_token))
+            dispatch(setTokenRefresh(tokens.refresh_token));
+            return tokens
+        }) .then((d)=>{navigate('/profile') 
+        return d})
+        .catch((errorData)=>{    
+            dispatch(setError(errorData.message))
     })
-    .catch((errorData)=>{    
-    dispatch(setError(errorData.message))
-})
+    return data    
+    }).catch((errorData)=>{
+        dispatch(setError(errorData.message))})
+   
 
 }
 } 

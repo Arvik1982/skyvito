@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react'
-import { useDispatch, 
-  // useSelector
- } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { localHost,
-  // accessToken
-} from '../../vars/vars'
+import { localHost } from '../../vars/vars'
 import styles from './article.module.css'
 import logo from '../../img/logo.png'
 import Header from '../../components/Header/Header'
@@ -17,32 +13,40 @@ import PhoneButton from '../../components/PhoneButton/PhoneButton'
 import EditButton from '../../components/EditDellButtons/EditBtn'
 import DeleteButton from '../../components/EditDellButtons/DeleteBtn'
 import { setUserData } from '../../store/reducers/sliceReg'
-// import { setCurrentAdd } from '../../store/reducers/sliceAdds'
 import Comments from '../../modal/Comments/Comments'
+import LogoSky from '../../components/Logo/Logo'
 
 
 export default function Article() {
+
+  const dispatch = useDispatch()
+
   const currentAddLocal = JSON.parse(localStorage.getItem('currentAdd')) // actual
-  const userId =Number( localStorage.getItem('userUID')) // user before actual
+  const userId =Number(localStorage.getItem('userUID')) // user before actual
+
+  const userAssessTokenRedux = useSelector((state) => state.authRedux.access_token);
+  const userRefreshTokenRedux = useSelector((state) => state.authRedux.access_refresh);
+  const deleted = useSelector((state) => state.addsRedux.imgDeleted);
   
   const [currentAdd] = useState(currentAddLocal)
   const [displayButtons, setDisplayButtons]=useState(false)
   const [comments, setComments] = useState([])
-  // const [showButtons, setShowButtons] = useState(false)
-  const dispatch = useDispatch()
+  const [commentsOpen, setCommentsOpen]= useState(false)
+  
 
  const currentAddUserId = currentAdd.user.id
  const postId=currentAdd.id
-const [commentsOpen, setCommentsOpen]= useState(false)
-
-// = useSelector(state=>state.authRedux.userData.id)
+ 
 
 
 
   useEffect(() => {
+
     !userId||!currentAddUserId?setDisplayButtons(true):'';
-    // setShowButtons(true)
-    refreshTokens().catch((err)=>{console.log(err)}).then((tokens)=>{ 
+    
+    refreshTokens(userAssessTokenRedux,userRefreshTokenRedux)
+    .catch((err)=>{console.log(err)})
+    .then((tokens)=>{     
 
       getUserByToken(tokens.access_token)
       .then((data)=>{
@@ -50,15 +54,15 @@ const [commentsOpen, setCommentsOpen]= useState(false)
         setDisplayButtons(true)})
       .catch((err)=>{console.log(err)})
 
-    })
+    });
 
-    getCurrentComment(currentAdd.id).then((data) => {
-      
+    getCurrentComment(currentAdd.id)
+    .then((data) => {
       let dataArray = []
       dataArray = data
       setComments(dataArray)
     }).catch((err)=>{console.log(err)})
-  }, [])
+  }, [deleted]);
    
   return (
     <div className={styles.wrapper}>
@@ -68,11 +72,8 @@ const [commentsOpen, setCommentsOpen]= useState(false)
         <main className={styles.main}>
           <div className={styles.main__container}>
             <div className={`${styles.main__menu} ${styles.menu}`}>
-              <a className={styles.menu__logo_link} href="" target="_blank">
-                <img className={styles.menu__logo_img} src={logo} alt="logo" />
-              </a>
-
-              <form className={styles.menu__form} action="#">
+              <LogoSky/>
+                   <form className={styles.menu__form} action="#">
                 <ToMainButton/>
               </form>
             </div>
@@ -98,11 +99,11 @@ const [commentsOpen, setCommentsOpen]= useState(false)
                    className={styles.article__img_bar}>
                     {currentAdd.images.map((el) => {
                       return (
-                        <div key={Math.round(Math.random()*100000)}   
+                        <div key={Math.round(Math.random()*1000000)}   
                         className={styles.article__img_bar_div}>
                          
-                          <img className={styles.img__line}
-                           key={Math.round(Math.random()*10000)}
+                          <img className={`${styles.img__line}`}
+                           key={Math.round(Math.random()*100000000)}
                             src={el?.url ? `${localHost}${el?.url}` : `${logo}`}
                             alt="element"
                           />
@@ -110,15 +111,15 @@ const [commentsOpen, setCommentsOpen]= useState(false)
                       )
                     })}
                   </div>
-                  <div key={Math.round(Math.random()*1000)} className={`${styles.article__img_bar_mob}`}>
+                  <div key={Math.round(Math.random()*10000000)} className={`${styles.article__img_bar_mob}`}>
                     {currentAdd.images.map((el) => {
                       return (
-                        <div key={Math.round(Math.random()*100)}
+                        <div key={Math.round(Math.random()*10000000)}
                           className={`${styles.img_bar_mob__circle} ${styles.circle_active}`}
                         >
                           <img 
-                             key={Math.round(Math.random()*10)}
-                            className={`${styles.img_bar_mob__circle}`}
+                             key={Math.round(Math.random()*1000000000)}
+                            className={` ${styles.img_bar_mob__circle}`}
                             src={el?.url ? `${localHost}${el?.url}` : `${logo}`}
                             alt="element"
                           />
@@ -143,8 +144,6 @@ const [commentsOpen, setCommentsOpen]= useState(false)
                     <span 
                       style={{cursor:'pointer', color:'#0080C1', textDecoration:'underline'}}
                       onClick={()=>{setCommentsOpen(true)}}
-                      // className={styles.article__link}
-                     
                     >
                       {comments.length}
                     </span>

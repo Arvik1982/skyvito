@@ -2,9 +2,9 @@ import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import ToMainButton from '../../components/ToMainButton/ToMainButton'
 import AddCard from '../../components/AddCard/AddCard'
-import logo from'../../img/logo.png'
 import styles from'./seller.module.css'
 import SellerInfo from '../../components/SellerInfo/SellerInfo'
+import LogoSky from '../../components/Logo/Logo'
 
 export default function SellerProfile() {
 
@@ -20,10 +20,8 @@ export default function SellerProfile() {
           <div className={styles.main__container}>
             <div className={styles.main__center_block}>
               <div className={`${styles.main__menu} ${styles.menu}`}>
-                <a className={styles.menu__logo_link} href="" target="_blank">
-                  <img className={styles.menu__logo_img} src={logo} alt="logo" />
-                </a>
-                <form className={styles.menu__form} action="#">
+                <LogoSky/>
+                    <form className={styles.menu__form} action="#">
                   <ToMainButton/>
                 </form>
               </div>

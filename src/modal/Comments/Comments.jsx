@@ -1,4 +1,4 @@
-
+import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import styles from './Comments.module.css'
 import { localHost } from '../../vars/vars';
@@ -6,11 +6,12 @@ import createComment from './createComment';
 import { getCurrentComment, refreshTokens } from '../../api';
 
 
-export default function Comments({ commentsOpen, setCommentsOpen, comments, 
-    setComments,
-    postId }) {
-    console.log(postId)
-    console.log(comments)
+
+export default function Comments({ commentsOpen, setCommentsOpen, comments, setComments }) {
+   
+const userAssessTokenRedux = useSelector((state) => state.authRedux.access_token);
+const userRefreshTokenRedux = useSelector((state) => state.authRedux.access_refresh);
+
 const [commentText, setCommentText]=useState('')
 const currentAdd= JSON.parse(localStorage.getItem('currentAdd'))
 
@@ -48,16 +49,16 @@ const currentAdd= JSON.parse(localStorage.getItem('currentAdd'))
             </div>
             <button
             onClick={()=>{
-                    refreshTokens().then((tokens)=>{
-                    createComment(tokens.access_token, commentText).then((data)=>{
-                    console.log(data);
+                    refreshTokens(userAssessTokenRedux,userRefreshTokenRedux).then((tokens)=>{
+                    createComment(tokens.access_token, commentText).then(()=>{
+                   
                     getCurrentComment(currentAdd.id).then((dataComments) => {
       
                         let dataArray = []
                         dataArray = dataComments
                         setComments(dataArray)
                       })
-                    // setComments(data)
+                    
                 })})}}
               type='button'
               className={`${styles.form_newArt__btn_pub} ${styles.btn_hov02}`}

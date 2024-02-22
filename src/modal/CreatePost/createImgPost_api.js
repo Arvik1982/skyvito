@@ -1,7 +1,11 @@
+
 import { localHost } from "../../vars/vars"
+import getUserAddsByToken from "../../functions/getUserAddsByToken"
 
 
-export default  function uploadImg(token,file,id,imgUploadForms){
+export default  function uploadImg(token,file,id,imgUploadForms,
+   dispatch
+   ){
  
   const data1 = new FormData()
   const data2 = new FormData()
@@ -28,7 +32,8 @@ export default  function uploadImg(token,file,id,imgUploadForms){
   }).catch((er)=>{throw new Error(er)})
     .then((response)=>
     {if(!response.ok){throw new Error('Недопустимый формат файла')};
-    return response.json()})
+    return response.json()
+  })
  }
 
 imgUploadForms[0].img?sendImg(data1).catch((er)=>{console.log(er.message)}):''
@@ -40,4 +45,8 @@ imgUploadForms[2].img?sendImg(data3).catch((er)=>{console.log(er.message)}):''
 imgUploadForms[3].img?sendImg(data4).catch((er)=>{console.log(er.message)}):''
 
 imgUploadForms[4].img?sendImg(data5).catch((er)=>{console.log(er.message)}):''
+
+getUserAddsByToken(dispatch)
+
+
 }

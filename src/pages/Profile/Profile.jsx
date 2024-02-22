@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import styles from './profile.module.css'
-import logo from '../../img/logo.png'
 import ToMainButton from '../../components/ToMainButton/ToMainButton'
 import AddCard from '../../components/AddCard/AddCard'
 import checkLoginStatus from '../../functions/checkLoginStatus'
@@ -13,6 +12,7 @@ import ChangeAvatar from '../../components/ChangeAvatar/ChangeAvatar'
 import getUserAddsByToken from '../../functions/getUserAddsByToken'
 import SaveUserData from '../../components/SaveUserData/SaveUserData'
 import { setUserTmpPhone } from '../../store/reducers/sliceReg'
+import LogoSky from '../../components/Logo/Logo'
 
 
 export default function Profile() {
@@ -21,6 +21,8 @@ const navigate=useNavigate()
   const dispatch = useDispatch()
   const error = useSelector((state) => state.errorRedux.error)
   const userDataRedux = useSelector((state) => state.authRedux.userData);
+  const userAssessTokenRedux = useSelector((state) => state.authRedux.access_token);
+  const userRefreshTokenRedux = useSelector((state) => state.authRedux.access_refresh);
   const newPostLoadsSuccess = useSelector((state) => state.addsRedux.newPostLoadSuccess) 
   const userData = checkLoginStatus(userDataRedux)
   const currentUserAdds = useSelector((state) => state.addsRedux.currentUserAdds)
@@ -52,9 +54,13 @@ const navigate=useNavigate()
   }, [userPhone])
 
   useEffect(() => {
-       getUserAddsByToken(dispatch)
+    console.log(newPostLoadsSuccess)
+
+       getUserAddsByToken(dispatch, userAssessTokenRedux, userRefreshTokenRedux)
     if(userData.name==='No_User'){navigate('/login')}
-  }, [newPostLoadsSuccess])
+  }, [
+    newPostLoadsSuccess
+  ])
 
  
 
@@ -66,20 +72,16 @@ const navigate=useNavigate()
           <div className={styles.main__container}>
             <div className={styles.main__center_block}>
               <div className={`${styles.main__menu} ${styles.menu}`}>
-                <a className={styles.menu__logo_link} href="" target="_blank">
-                  <img
-                    className={styles.menu__logo_img}
-                    src={logo}
-                    alt="logo"
-                  />
-                </a>
+
+              <LogoSky/>
+
                 <form className={styles.menu__form} action="#">
                   <ToMainButton />
                 </form>
               </div>
 
               <h2 className={styles.main__h2}>
-                Здравствуйте,{userData.name ? userData.name : 'Введите свое имя'}!
+                Здравствуйте,{userData.name ? userData.name : 'Имя'}!
               </h2>
 
               <div className={`${styles.main__profile} ${styles.profile}`}>

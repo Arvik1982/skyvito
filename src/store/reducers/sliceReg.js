@@ -18,11 +18,15 @@ const regSlice = createSlice({
         userTmpSurName:'',
         userTmpCity:'',
         userTmpPhone:'',
+        
 
        
 
     },
     reducers:{
+
+      
+
         setUserTmpPhone(state,action){
             state.userTmpPhone=action.payload
             
@@ -56,10 +60,7 @@ const regSlice = createSlice({
             state.password2=action.payload
             
         },
-        // setUserToken(state,action){
-        //     state.userToken=action.payload
-            
-        // },
+               
         setUserName(state,action){
             state.userName=action.payload
             
