@@ -5,7 +5,7 @@ import styles from'./authorization.module.css'
 import logoModal from '../../img/logo_modal.png'
 import InputMail from './inputMail'
 import InputPass from './inputPass'
-import { setEnterMode, setUserData } from '../../store/reducers/sliceReg'
+import { setEnterMode, setTokenAccess, setUserData} from '../../store/reducers/sliceReg'
 import { getUserByToken, getTokens } from '../../api'
 import { setError } from '../../store/reducers/sliceError'
 
@@ -35,8 +35,13 @@ return(
                     .then((tokens)=>{
                         console.log(tokens);
                         console.log(tokens.access_token);
+                        dispatch(setTokenAccess(tokens.access_token))
                         getUserByToken(tokens.access_token)
-                        .then((data)=>{dispatch(setUserData(data)); navigate('/profile')})
+                        .then((data)=>{
+                            localStorage.removeItem('userData');
+                            dispatch(setUserData(data));
+                            
+                             navigate('/profile')})
                         .catch((newError)=>{dispatch(setError(newError.message))})
 
                     }).catch((newError)=>{dispatch(setError(newError.message))})

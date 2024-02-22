@@ -8,7 +8,6 @@ const regSlice = createSlice({
         userMail:'',
         password:'',
         password2:'',
-        userToken:'',
         userName:'',
         userSurName:'',
         userCity:'',
@@ -45,6 +44,7 @@ const regSlice = createSlice({
             console.log(state.userTmpSurName)
         },
         setUserMail(state,action){
+            localStorage.setItem('userMail',action.payload)
             state.userMail=action.payload
             
         },
@@ -56,10 +56,10 @@ const regSlice = createSlice({
             state.password2=action.payload
             
         },
-        setUserToken(state,action){
-            state.userToken=action.payload
+        // setUserToken(state,action){
+        //     state.userToken=action.payload
             
-        },
+        // },
         setUserName(state,action){
             state.userName=action.payload
             
@@ -85,6 +85,7 @@ const regSlice = createSlice({
             
         },
         setTokenAccess(state,action){
+            console.log(state.access_token)
             state.access_token=action.payload
             
         },

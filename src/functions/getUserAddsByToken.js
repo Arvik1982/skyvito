@@ -4,23 +4,24 @@ import {
 } from '../api'
 import { setError } from '../store/reducers/sliceError'
 import { setCurrentUserAdds } from '../store/reducers/sliceAdds';
+import { setTokenAccess } from '../store/reducers/sliceReg';
 
 export default function getUserAddsByToken (dispatch){
-  console.log('get')
+  
     dispatch(setError(''));
     getCurrentUserAdds(String(localStorage.getItem('user_token')))
-    .then((data)=>{console.log(data);dispatch(setCurrentUserAdds(data))})
+    .then((data)=>{dispatch(setCurrentUserAdds(data))})
     .catch(()=>{
       
       refreshTokens()
       .then((dataRefresh)=>{dispatch(setError(''));
-
+        dispatch(setTokenAccess(dataRefresh.access_token));
         getCurrentUserAdds(dataRefresh.access_token?
           dataRefresh.access_token:
           String(localStorage.getItem('user_token')))
-          .then((data)=>{console.log(data);dispatch(setCurrentUserAdds(data))})
-          .catch(()=>{dispatch(setError('Перезайдите в приложение'))})
+          .then((data)=>{dispatch(setCurrentUserAdds(data))})
+          .catch(()=>{dispatch(setError('1_Сессия истекла.Перезайдите в приложение'))})
         
         }).catch(()=>{
-          dispatch(setError('Перезайдите в приложение'))})})
+          dispatch(setError('2_Сессия истекла.Перезайдите в приложение'))})})
 }

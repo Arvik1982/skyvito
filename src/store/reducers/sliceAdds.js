@@ -8,8 +8,19 @@ const sliceAdds = createSlice({
         searchString:'',
         searchResult:[],
         currentUserAdds:[],
+        createAdd:false,
+        
     },
     reducers:{
+
+
+  
+
+        setCreateAddStatus(state,action){
+            state.createAdd=action.payload
+             
+         },
+
         setAdds(state,action){
            state.adds=action.payload
            localStorage.setItem('allAdds',JSON.stringify(action.payload))  
@@ -60,5 +71,10 @@ const sliceAdds = createSlice({
         }
 })
 
-export const{setAdds, setCurrentAdd, setSearchData, setCurrentUserAdds}=sliceAdds.actions;
+export const{setAdds,
+     setCurrentAdd,
+      setSearchData,
+       setCurrentUserAdds,
+       setCreateAddStatus,
+       setNewPostImg}=sliceAdds.actions;
 export default sliceAdds.reducer

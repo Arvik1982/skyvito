@@ -6,7 +6,6 @@ import logo from '../../img/logo.png'
 import Header from '../../components/Header/Header'
 import dataFormat from '../../functions/dataformat'
 import { getCurrentComment } from '../../api'
-
 import Footer from'../../components/Footer/Footer'
 import ToMainButton from '../../components/ToMainButton/ToMainButton'
 
@@ -23,8 +22,7 @@ export default function Article() {
     })
   }, [])
 
-  console.log(comments)
-  console.log(currentAdd)
+  
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
