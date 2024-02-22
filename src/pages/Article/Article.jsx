@@ -1,32 +1,69 @@
 import { useEffect, useState } from 'react'
+import { useDispatch, 
+  // useSelector
+ } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { localHost } from '../../vars/vars'
+import { localHost,
+  // accessToken
+} from '../../vars/vars'
 import styles from './article.module.css'
 import logo from '../../img/logo.png'
 import Header from '../../components/Header/Header'
 import dataFormat from '../../functions/dataformat'
-import { getCurrentComment } from '../../api'
+import { getCurrentComment, getUserByToken, refreshTokens } from '../../api'
 import Footer from'../../components/Footer/Footer'
 import ToMainButton from '../../components/ToMainButton/ToMainButton'
+import PhoneButton from '../../components/PhoneButton/PhoneButton'
+import EditButton from '../../components/EditDellButtons/EditBtn'
+import DeleteButton from '../../components/EditDellButtons/DeleteBtn'
+import { setUserData } from '../../store/reducers/sliceReg'
+// import { setCurrentAdd } from '../../store/reducers/sliceAdds'
+import Comments from '../../modal/Comments/Comments'
+
 
 export default function Article() {
-  const currentAddLocal = JSON.parse(localStorage.getItem('currentAdd'))
+  const currentAddLocal = JSON.parse(localStorage.getItem('currentAdd')) // actual
+  const userId =Number( localStorage.getItem('userUID')) // user before actual
+  
   const [currentAdd] = useState(currentAddLocal)
+  const [displayButtons, setDisplayButtons]=useState(false)
   const [comments, setComments] = useState([])
+  // const [showButtons, setShowButtons] = useState(false)
+  const dispatch = useDispatch()
+
+ const currentAddUserId = currentAdd.user.id
+ const postId=currentAdd.id
+const [commentsOpen, setCommentsOpen]= useState(false)
+
+// = useSelector(state=>state.authRedux.userData.id)
+
+
 
   useEffect(() => {
+    !userId||!currentAddUserId?setDisplayButtons(true):'';
+    // setShowButtons(true)
+    refreshTokens().catch((err)=>{console.log(err)}).then((tokens)=>{ 
+
+      getUserByToken(tokens.access_token)
+      .then((data)=>{
+        dispatch(setUserData(data));
+        setDisplayButtons(true)})
+      .catch((err)=>{console.log(err)})
+
+    })
+
     getCurrentComment(currentAdd.id).then((data) => {
+      
       let dataArray = []
       dataArray = data
       setComments(dataArray)
-    })
+    }).catch((err)=>{console.log(err)})
   }, [])
-
-  
+   
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
-        <Header noDisplay={false} />
+        <Header postId={postId} noDisplay={false} />
 
         <main className={styles.main}>
           <div className={styles.main__container}>
@@ -41,12 +78,13 @@ export default function Article() {
             </div>
           </div>
 
-          <div className={`${styles.main__artic} ${styles.artic}`}>
-            <div className={`${styles.artic__content} ${styles.article}`}>
-              <div className={styles.article__left}>
-                <div className={styles.article__fill_img}>
-                  <div className={styles.article__img}>
-                    <img
+          <div   className={`${styles.main__artic} ${styles.artic}`}>
+            <div  className={`${styles.artic__content} ${styles.article}`}>
+              <div  className={styles.article__left}>
+                <div  className={styles.article__fill_img}>
+                  <div  className={styles.article__img}>
+                    
+                    <img 
                       src={
                         currentAdd.images[0]?.url
                           ? `${localHost}${currentAdd.images[0]?.url} `
@@ -55,11 +93,16 @@ export default function Article() {
                       alt="element"
                     />
                   </div>
-                  <div className={styles.article__img_bar}>
+                  <div 
+                  
+                   className={styles.article__img_bar}>
                     {currentAdd.images.map((el) => {
                       return (
-                        <div className={styles.article__img_bar_div}>
-                          <img
+                        <div key={Math.round(Math.random()*100000)}   
+                        className={styles.article__img_bar_div}>
+                         
+                          <img className={styles.img__line}
+                           key={Math.round(Math.random()*10000)}
                             src={el?.url ? `${localHost}${el?.url}` : `${logo}`}
                             alt="element"
                           />
@@ -67,14 +110,15 @@ export default function Article() {
                       )
                     })}
                   </div>
-                  <div className={`${styles.article__img_bar_mob}`}>
+                  <div key={Math.round(Math.random()*1000)} className={`${styles.article__img_bar_mob}`}>
                     {currentAdd.images.map((el) => {
                       return (
-                        <div
+                        <div key={Math.round(Math.random()*100)}
                           className={`${styles.img_bar_mob__circle} ${styles.circle_active}`}
                         >
-                          <img
-                            className={styles.img_bar_mob__circle}
+                          <img 
+                             key={Math.round(Math.random()*10)}
+                            className={`${styles.img_bar_mob__circle}`}
                             src={el?.url ? `${localHost}${el?.url}` : `${logo}`}
                             alt="element"
                           />
@@ -96,20 +140,27 @@ export default function Article() {
                     <p className={styles.article__city}>
                       {currentAdd.user.city}
                     </p>
-                    <a
-                      className={styles.article__link}
-                      href=""
-                      target="_blank"
-                      // rel="#"
+                    <span 
+                      style={{cursor:'pointer', color:'#0080C1', textDecoration:'underline'}}
+                      onClick={()=>{setCommentsOpen(true)}}
+                      // className={styles.article__link}
+                     
                     >
                       {comments.length}
-                    </a>
+                    </span>
                   </div>
 {/* comments */}
+          <Comments 
+          setComments={setComments} 
+          commentsOpen={commentsOpen} 
+          setCommentsOpen={setCommentsOpen} 
+          comments={comments}
+          commentId={postId}/>
+          
                   <div className={`${styles.comments__list} ${styles.comments_visible}`}>
                   {comments.map((el) => {
                       return (
-                        <div>
+                        <div key={el.id}>
                           <h2>-{el.author.name}</h2>
                           <h3>{el.text}</h3>
                         </div>
@@ -118,18 +169,21 @@ export default function Article() {
                   </div>
 {/* comments */}
                   <p className={styles.article__price}>{currentAdd.price}</p>
-                  <button
-                    type="button"
-                    className={`${styles.article__btn} ${styles.btn_hov02}`}
-                  >
-                    Показать&nbsp;телефон <br />
-                    <span> {currentAdd.user.phone}</span> <br />
-                    <span>8&nbsp;905&nbsp;ХХХ&nbsp;ХХ&nbsp;ХХ</span>
-                  </button>
+                  {displayButtons&&<>
+                  
+                  {currentAddUserId===userId&& <div
+                    // key={showButtons}
+                     className={styles.button__block_edit}> 
+                  <EditButton />
+                  <DeleteButton postId={postId} />
+                  </div> }
+                  {currentAddUserId!==userId&& 
+                  <PhoneButton phone={currentAdd.user.phone}/>}
+                  </>}
                   <div className={`${styles.article__author} ${styles.author}`}>
                     <div className={styles.author__img}>
                       <Link to='/seller'>
-                      <img
+                      <img className={styles.seller__avatar}
                         src={
                           currentAdd.user?.avatar
                             ? `${localHost}${currentAdd.user.avatar}`
@@ -168,7 +222,6 @@ export default function Article() {
             </div>
           </div>
         </main>
-
         <Footer/>
       </div>
     </div>

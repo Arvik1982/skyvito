@@ -20,7 +20,8 @@ export default function Profile() {
 const navigate=useNavigate()  
   const dispatch = useDispatch()
   const error = useSelector((state) => state.errorRedux.error)
-  const userDataRedux = useSelector((state) => state.authRedux.userData) //  получить массив юзера и передать в AddCard
+  const userDataRedux = useSelector((state) => state.authRedux.userData);
+  const newPostLoadsSuccess = useSelector((state) => state.addsRedux.newPostLoadSuccess) 
   const userData = checkLoginStatus(userDataRedux)
   const currentUserAdds = useSelector((state) => state.addsRedux.currentUserAdds)
   const [userPhone, setUserPhone] = useState(userData.phone ? userData.phone : '')
@@ -51,9 +52,11 @@ const navigate=useNavigate()
   }, [userPhone])
 
   useEffect(() => {
-    getUserAddsByToken(dispatch)
+       getUserAddsByToken(dispatch)
     if(userData.name==='No_User'){navigate('/login')}
-  }, [])
+  }, [newPostLoadsSuccess])
+
+ 
 
   return (
     <div className={styles.wrapper}>
@@ -86,7 +89,7 @@ const navigate=useNavigate()
                   </h3>
                   <div
                     className={`${styles.profile__settings} ${styles.settings}`}
-                  >{console.log(userData)}
+                  >
                     <ChangeAvatar avatar={userData.avatar} />
 
                     <div className={styles.settings__right}>

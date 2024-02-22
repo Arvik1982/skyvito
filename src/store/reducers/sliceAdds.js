@@ -9,14 +9,37 @@ const sliceAdds = createSlice({
         searchResult:[],
         currentUserAdds:[],
         createAdd:false,
+        newPostReady:false,
+        newPostLoadSuccess:false,
+        editMode:false,
+       
         
     },
     reducers:{
 
+       
 
-  
+        setEditMode(state,action){
+            
+            state.editMode=action.payload
+             
+         },
+
+        setNewPostLoadSuccess(state,action){
+            
+            state.newPostLoadSuccess=action.payload
+             
+         },
+
+
+        setNewPostReady(state,action){
+            
+            state.newPostReady=action.payload
+             
+         },
 
         setCreateAddStatus(state,action){
+
             state.createAdd=action.payload
              
          },
@@ -33,7 +56,7 @@ const sliceAdds = createSlice({
 
          setCurrentUserAdds(state,action){
             state.currentUserAdds=action.payload
-            console.log(state.currentUserAdds)},
+           },
             
 
          setSearchData(state,action){
@@ -76,5 +99,8 @@ export const{setAdds,
       setSearchData,
        setCurrentUserAdds,
        setCreateAddStatus,
-       setNewPostImg}=sliceAdds.actions;
+       setNewPostImg,
+       setNewPostReady,
+       setNewPostLoadSuccess,
+    setEditMode}=sliceAdds.actions;
 export default sliceAdds.reducer

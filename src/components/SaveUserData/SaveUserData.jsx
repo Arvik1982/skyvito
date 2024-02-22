@@ -41,7 +41,7 @@ if(toSend){
     changeUser(accessTokenNew,toSend)
     .then((data)=>{dispatch(setError(''));
     localStorage.removeItem('userData');
-    dispatch(setUserData(data))})
+       dispatch(setUserData(data))})
     .catch(()=>{
       refreshTokens()
       .then((tokens)=>{
@@ -50,7 +50,7 @@ if(toSend){
         changeUser(tokens.access_token,toSend)
         .then((data)=>{
           localStorage.removeItem('userData');
-          dispatch(setUserData(data))
+           dispatch(setUserData(data))
         }).catch((newError)=>{console.log(newError);
           dispatch(setError('3_save_data_changes_Сессия истекла. Перезайдите в приложение'))})
       })

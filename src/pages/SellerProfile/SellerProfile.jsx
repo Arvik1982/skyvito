@@ -34,7 +34,7 @@ export default function SellerProfile() {
             <div className={styles.main__content}>
               <div className={`${styles.content__cards} ${styles.cards}`}>
               {sellersArray.map((add)=>{
-                return <AddCard add={add} />
+                return <AddCard key={add.id} add={add} />
                })} 
               </div>
             </div>

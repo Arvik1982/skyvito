@@ -1,10 +1,10 @@
 import { localHost } from "../../vars/vars"
 
 
-export default async function uploadTxt(token,title,description,price){
+export default async function changeTxt(token,title,description,price,id){
   try{
-  const sendFileResponse = await fetch(`${localHost}adstext`, {
-    method: 'POST',
+  const changeResponse = await fetch(`${localHost}ads/${id}`, {
+    method: 'PATCH',
     body:  JSON.stringify({
         title: title,
         description: description,
@@ -15,11 +15,11 @@ export default async function uploadTxt(token,title,description,price){
       Authorization: `Bearer ${token}`
     },
   })
-      if (!sendFileResponse.ok) {
+      if (!changeResponse.ok) {
         throw new Error('ulpoad_TXT_Oшибка сервера')
       }
-      const sendFile = await sendFileResponse.json()
-      return sendFile
+      const change = await changeResponse.json()
+      return change
   }catch (error)  {
          console.log ('ulpoad_TXT_Oшибка сервера') 
          throw new Error(error.message)}

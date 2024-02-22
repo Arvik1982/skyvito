@@ -9,7 +9,7 @@ export default function ProfileTextInput({value, placeholder,name}){
   const dispatch= useDispatch()
 
   useEffect(()=>{
-    console.log(name)
+    
     name==='name'? dispatch(setUserTmpName(inputValue)):
     name==='surname'?dispatch(setUserTmpSurName(inputValue)):
     name==='city'?dispatch(setUserTmpCity(inputValue)):''
