@@ -11,15 +11,18 @@ export default function Comments({ commentsOpen, setCommentsOpen, comments, setC
    
 const userAssessTokenRedux = useSelector((state) => state.authRedux.access_token);
 const userRefreshTokenRedux = useSelector((state) => state.authRedux.access_refresh);
-
 const [commentText, setCommentText]=useState('')
 const currentAdd= JSON.parse(localStorage.getItem('currentAdd'))
+
+
 
   return (
     <div 
       className={commentsOpen ? styles.modal__block : styles.noDisplay}>
 
       <div className={styles.modal__content}>
+
+      
         <h3 className={styles.modal__title}>Отзывы о товаре</h3>
 
         <div 
@@ -35,7 +38,16 @@ const currentAdd= JSON.parse(localStorage.getItem('currentAdd'))
             action="#"
           >
             <div className={styles.form_newArt__block}>
-              <label >Добавить отзыв</label>
+            <label >Добавить отзыв</label>
+              
+              {!commentText&&<label style={{color:'red'}} >
+                Заполните поле с отзывом</label>}
+              
+                {/* commentText.value = `QUOTE_BEGIN${commentText.value
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")}QUOTE_END`; */}
+
+
               <textarea
                 value={commentText}
                 onChange={(e)=>{setCommentText(e.target.value);}}
@@ -47,11 +59,15 @@ const currentAdd= JSON.parse(localStorage.getItem('currentAdd'))
                 placeholder="Введите описание"
               />
             </div>
+            
             <button
+            disabled={commentText?false:true}
             onClick={()=>{
+              !commentText?'':
                     refreshTokens(userAssessTokenRedux,userRefreshTokenRedux).then((tokens)=>{
                     createComment(tokens.access_token, commentText).then(()=>{
-                   
+                    setCommentText('')
+                      
                     getCurrentComment(currentAdd.id).then((dataComments) => {
       
                         let dataArray = []
@@ -73,12 +89,14 @@ const currentAdd= JSON.parse(localStorage.getItem('currentAdd'))
             
             
               {comments.map((el)=>{return(
-                <div className={`${styles.reviews__review} ${styles.review}`}>
+                <div key={el.id} className={`${styles.reviews__review} ${styles.review}`}>
                 <div className={styles.review__item}>
                 <div className={styles.review__left}>
 
-                  <div className={styles.review__img}>
-                    <img src={localHost+el.author.avatar} alt="" />
+                  <div 
+                  className={styles.review__img}
+                  >
+                    <img className={styles.review__img_avatar} src={localHost+el.author.avatar} alt="" />
                   </div>
 
                 </div>

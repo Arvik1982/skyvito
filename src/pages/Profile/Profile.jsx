@@ -54,7 +54,7 @@ const navigate=useNavigate()
   }, [userPhone])
 
   useEffect(() => {
-    console.log(newPostLoadsSuccess)
+    
 
        getUserAddsByToken(dispatch, userAssessTokenRedux, userRefreshTokenRedux)
     if(userData.name==='No_User'){navigate('/login')}

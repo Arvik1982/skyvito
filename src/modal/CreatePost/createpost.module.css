@@ -311,25 +311,36 @@
 
   .delete__img_text{
     /* display: none; */
-    color:red; 
+    text-align: center;
+    font-size: large;
+    font-weight: bold;
+    line-height: 90px;
+    min-width: 80px;  
+    min-height: 80px;
+    color: rgb(237, 12, 53);
     z-index: 500;
     position:absolute;
     font-Size:20px;
-    margin-top:33px;
-    margin-left:37px;
+    /* margin-top:33px;
+    margin-left:37px; */
     cursor:pointer
 
   }
 
 
   .delete__img_text:hover{
+    min-width: 80px;  
+    min-height: 80px;
     display: block;
-    font-Size:21px;
-    margin-left:37px; 
-    color: rgb(247, 158, 133);
+    font-Size:31px;
+    /* margin-left:33px; 
+    margin-top:29px; */
+    color:red; 
   }
 
- 
+  .delete__img_text:hover::before{
+    content: 'delete';
+  }
 
 
   

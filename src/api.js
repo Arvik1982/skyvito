@@ -134,11 +134,14 @@ export async function getUserByToken(token) {
 
 export async function refreshTokens(userAssessTokenRedux, userRefreshTokenRedux) 
 
+
 {console.log('refresh START')
   try {
     
     const token = localStorage.getItem('user_token')
     const refresh = localStorage.getItem('user_token_refresh')
+
+   
     
     const responseRefresh = await fetch('http://localhost:8090/auth/login', {
       method: 'PUT',
@@ -170,7 +173,7 @@ export async function refreshTokens(userAssessTokenRedux, userRefreshTokenRedux)
         
        return dataRefresh
       }
-    
+  
 
 
     const dataRefresh = await responseRefresh.json()
@@ -182,16 +185,19 @@ export async function refreshTokens(userAssessTokenRedux, userRefreshTokenRedux)
     }
    
     return dataRefresh
+    
 
   } catch (error) {
     throw new Error(error.message)
   }
+
 }
+
 
 
 export async function getCurrentUserAdds(accessTokenNew) {
   console.log('getCurrentUserAdds START')  
-console.log(accessTokenNew)
+
   try{
   const currentUserAddsResp = await fetch('http://127.0.0.1:8090/ads/me', {
     method: 'GET',
@@ -208,7 +214,7 @@ console.log(accessTokenNew)
 
   }
   const userAdds = await currentUserAddsResp.json()
-  console.log('getCurrentUserAdds OKAY')
+  console.log('getCurrentUserAdds OK')
   return userAdds
 }
 catch(error){

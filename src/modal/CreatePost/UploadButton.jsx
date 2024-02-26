@@ -41,7 +41,8 @@ export default function UploadButton({
                 dispatch(setNewPostLoadSuccess(false));
                    uploadTxt(tokens.access_token,title,description,price)  
                    .then((txtData)=>{
-                    uploadImg(tokens.access_token,file,txtData.id,imgUploadForms,dispatch)})
+                    uploadImg(tokens.access_token,file,txtData.id,imgUploadForms,dispatch);
+                  })
                     .catch((errTxt)=>{console.log(errTxt)})})
                     .then(()=>{
                       dispatch(setNewPostLoadSuccess(true));

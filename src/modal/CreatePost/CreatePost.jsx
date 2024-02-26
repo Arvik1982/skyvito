@@ -35,11 +35,11 @@ export default function CreatePost({ editMode, postId }) {
     : (formName = 'Новое объявление')
 
   const [imgUploadForms, setImgUploadForms] = useState([
-    { id: 0, img: '', src: '' },
-    { id: 1, img: '', src: '' },
-    { id: 2, img: '', src: '' },
-    { id: 3, img: '', src: '' },
-    { id: 4, img: '', src: '' },
+    { id: 0, img: '', src: '',deleted:false },
+    { id: 1, img: '', src: '',deleted:false },
+    { id: 2, img: '', src: '',deleted:false },
+    { id: 3, img: '', src: '',deleted:false },
+    { id: 4, img: '', src: '',deleted:false },
   ])
 
   useEffect(() => {
@@ -82,6 +82,7 @@ export default function CreatePost({ editMode, postId }) {
   useEffect(() => {
     dispatch(setImgDeleted(false))
   }, [deleted])
+
   return (
     <div key={newData} className={styles.modal__block}>
       <div
@@ -156,6 +157,7 @@ export default function CreatePost({ editMode, postId }) {
                     setSrc={setSrc}
                     id={el.id}
                     imgUploadForms={imgUploadForms}
+                    setImgUploadForms={setImgUploadForms}
                     imgNumber={imgNumber}
                     setImgNumber={setImgNumber}
                     editMode={editMode}

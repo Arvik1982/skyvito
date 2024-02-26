@@ -37,7 +37,7 @@ return(
                     getTokens(loginName, password)
                     
                     .then((tokens)=>{
-                        console.log(tokens)
+                        
                         dispatch(setTokenAccess(tokens.access_token));
                         dispatch(setTokenRefresh(tokens.refresh_token));
                         getUserByToken(tokens.access_token)

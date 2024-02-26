@@ -2,9 +2,9 @@
 import { localHost } from "../../vars/vars"
 
 
- export default function deleteImg(addId,imgRef,token){
-
-  return fetch (`${localHost}ads/${addId}/image/?file_url=${imgRef}`, {
+ export default async function deleteImg(addId,imgRef,token){
+try{
+ const response = await fetch (`${localHost}ads/${addId}/image/?file_url=${imgRef}`, {
   
     method: 'DELETE',
     
@@ -15,13 +15,34 @@ import { localHost } from "../../vars/vars"
     },
 
   })
-  .then((response)=>{
-      if(!response.ok){throw new Error('Недопустимый формат файла')
-    };
+  if (!response.ok){
 
-    return response.json()
+    const dataErr = await response.json()
 
-  }).catch((er)=>{throw new Error(er)})
+    if(dataErr.detail!=='No content'){
+    
+    throw new Error(response)
+  }
 
- }
+  if(dataErr.detail==='No content'){
+    
+  return dataErr.detail 
+          
+  }
+if (dataErr.detail!=='No content'&& response.status===400){
+  throw new Error('Ошибка обработки файла')
+}
+
+  }
+
+const data = await response.json()
+return data
+
+
+ }catch(er){
+ 
+  throw new Error(er)
+  }
+
+}
 

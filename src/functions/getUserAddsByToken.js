@@ -13,7 +13,7 @@ export default function getUserAddsByToken (dispatch, userAssessTokenRedux, user
     refreshTokens(userAssessTokenRedux, userRefreshTokenRedux)
 
       .then((dataRefresh)=>{dispatch(setError(''));
-        console.log(dataRefresh)
+       
         dispatch(setTokenAccess(dataRefresh.access_token));
         dispatch(setTokenRefresh(dataRefresh.refresh_token));
         return dataRefresh 

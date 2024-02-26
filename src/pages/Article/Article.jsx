@@ -32,18 +32,22 @@ export default function Article() {
   const [displayButtons, setDisplayButtons]=useState(false)
   const [comments, setComments] = useState([])
   const [commentsOpen, setCommentsOpen]= useState(false)
+  const [mainImg, setMainImg]= useState( currentAdd.images[0]?.url
+    ? `${localHost}${currentAdd.images[0]?.url} `
+    : `${logo}`)
   
 
  const currentAddUserId = currentAdd.user.id
  const postId=currentAdd.id
- 
+ const token = localStorage.getItem('user_token')
 
 
 
   useEffect(() => {
 
     !userId||!currentAddUserId?setDisplayButtons(true):'';
-    
+   if(userAssessTokenRedux||token) {
+
     refreshTokens(userAssessTokenRedux,userRefreshTokenRedux)
     .catch((err)=>{console.log(err)})
     .then((tokens)=>{     
@@ -54,7 +58,8 @@ export default function Article() {
         setDisplayButtons(true)})
       .catch((err)=>{console.log(err)})
 
-    });
+    })
+  };
 
     getCurrentComment(currentAdd.id)
     .then((data) => {
@@ -86,11 +91,7 @@ export default function Article() {
                   <div  className={styles.article__img}>
                     
                     <img 
-                      src={
-                        currentAdd.images[0]?.url
-                          ? `${localHost}${currentAdd.images[0]?.url} `
-                          : `${logo}`
-                      }
+                      src={ mainImg }
                       alt="element"
                     />
                   </div>
@@ -99,7 +100,9 @@ export default function Article() {
                    className={styles.article__img_bar}>
                     {currentAdd.images.map((el) => {
                       return (
-                        <div key={Math.round(Math.random()*1000000)}   
+                        <div 
+                        onClick={()=>(setMainImg(el?.url ? `${localHost}${el?.url}` : `${logo}`))}
+                        key={Math.round(Math.random()*1000000)}   
                         className={styles.article__img_bar_div}>
                          
                           <img className={`${styles.img__line}`}
@@ -132,7 +135,7 @@ export default function Article() {
               <div className={styles.article__right}>
                 <div className={styles.article__block}>
                   <h3 className={`${styles.article__title} ${styles.title}`}>
-                    {currentAdd.title}
+                  Название:  {currentAdd.title}
                   </h3>
                   <div className={styles.article__info}>
                     <p className={styles.article__date}>
@@ -140,7 +143,8 @@ export default function Article() {
                     </p>
                     <p className={styles.article__city}>
                       {currentAdd.user.city}
-                    </p>
+                    </p><br/>
+                    <label>Комментарии:</label>
                     <span 
                       style={{cursor:'pointer', color:'#0080C1', textDecoration:'underline'}}
                       onClick={()=>{setCommentsOpen(true)}}
@@ -149,6 +153,7 @@ export default function Article() {
                     </span>
                   </div>
 {/* comments */}
+
           <Comments 
           setComments={setComments} 
           commentsOpen={commentsOpen} 
@@ -167,7 +172,7 @@ export default function Article() {
                     })}
                   </div>
 {/* comments */}
-                  <p className={styles.article__price}>{currentAdd.price}</p>
+                  <p className={styles.article__price}>{currentAdd.price} руб.</p>
                   {displayButtons&&<>
                   
                   {currentAddUserId===userId&& <div

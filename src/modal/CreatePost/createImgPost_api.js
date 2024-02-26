@@ -36,15 +36,25 @@ export default  function uploadImg(token,file,id,imgUploadForms,
   })
  }
 
-imgUploadForms[0].img?sendImg(data1).catch((er)=>{console.log(er.message)}):''
+if(!imgUploadForms[0].deleted){
+  
+imgUploadForms[0].img?sendImg(data1).catch((er)=>{console.log(er.message)}):''}
 
-imgUploadForms[1].img?sendImg(data2).catch((er)=>{console.log(er.message)}):''
+if(!imgUploadForms[1].deleted){
+  console.log(imgUploadForms[1].deleted)
+imgUploadForms[1].img?sendImg(data2).catch((er)=>{console.log(er.message)}):''}
 
-imgUploadForms[2].img?sendImg(data3).catch((er)=>{console.log(er.message)}):''
+if(!imgUploadForms[2].deleted){
+  
+imgUploadForms[2].img?sendImg(data3).catch((er)=>{console.log(er.message)}):''}
 
-imgUploadForms[3].img?sendImg(data4).catch((er)=>{console.log(er.message)}):''
+if(!imgUploadForms[3].deleted){
+  
+imgUploadForms[3].img?sendImg(data4).catch((er)=>{console.log(er.message)}):''}
 
-imgUploadForms[4].img?sendImg(data5).catch((er)=>{console.log(er.message)}):''
+if(!imgUploadForms[4].deleted){
+  
+imgUploadForms[4].img?sendImg(data5).catch((er)=>{console.log(er.message)}):''}
 
 getUserAddsByToken(dispatch)
 

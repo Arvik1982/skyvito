@@ -20,7 +20,7 @@ export default function ImgUploadForm({
   setSrc,
   id,
   imgUploadForms,
-  
+  setImgUploadForms,
   setImgNumber,
   editMode,
   currentAdd,
@@ -49,22 +49,29 @@ export default function ImgUploadForm({
       setStartDel(true)
       refreshTokens(userAssessTokenRedux,userRefreshTokenRedux)
       .then((tokens)=>{
-
         dispatch(setTokenAccess(tokens.access_token));
         dispatch(setTokenRefresh(tokens.refresh_token));
-
         deleteImg(currentAdd.id,currentAdd.images[id]?.url, tokens.access_token)
 
-        .then(()=>
-        
-        {dispatch(setImgDeleted(true));
+        .then((data)=> 
+        {
+          
+          if(data==='No content'){
+            
+            setSrc('')
+            const newArr = imgUploadForms
+            newArr.forEach((el)=>{el.id === id?(el.deleted = true):''})
+            setImgUploadForms(newArr)
+          }
+          dispatch(setImgDeleted(true));
           setStartDel(false)
           console.log('DELETED IMG')
-         
-          
-
         })
-        .catch((err)=>{setStartDel(false);console.log(err.message)})
+        .catch((err)=>{
+          setStartDel(false);
+          console.log(err.message)
+          console.log("err.message")
+        })
       });
       
       
@@ -120,10 +127,10 @@ export default function ImgUploadForm({
          {Math.round(Math.random()*1000)}  
         className={styles.form_newArt__img}>
 
-<h2 
+<div
 onClick={()=>{del(realUpload)}}
 className={src||currentAdd.images[id]?styles.delete__img_text
-          :styles.display}> X </h2>
+          :styles.display}> X </div>
 
 
         <input
@@ -149,13 +156,19 @@ className={src||currentAdd.images[id]?styles.delete__img_text
           {src||currentAdd.images[id]? del(realUpload): realUpload.current.click()}
         }
           style={src||currentAdd.images[id]?{width:'100%',height:'100%'}:null} 
-          src={src?imgUploadForms[id].src:currentAdd.images[id]?localHost+currentAdd.images[id].url:null} 
+          src={
+            src?imgUploadForms[id].src:
+            currentAdd.images[id]?
+            localHost+currentAdd.images[id].url
+            :null
+          } 
+
+          // src?imgUploadForms[id].src:
+          // currentAdd.images[id]?
+          // localHost+currentAdd.images[id].url
+          // :null
+
           alt="" />
-
-
-          
-
-          
 
          <div onKeyDown={()=>{}} 
          onClick={()=>{realUpload.current.click()}}
