@@ -14,7 +14,7 @@
             align-items: top;
     -webkit-box-pack: start;
         -ms-flex-pack: start;
-            justify-content: start;
+            justify-content: flex-start;
   }
   .seller__left {
     display: -webkit-box;

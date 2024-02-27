@@ -131,7 +131,7 @@
             align-items: center;
     -webkit-box-pack: start;
         -ms-flex-pack: start;
-            justify-content: start;
+            justify-content: flex-start;
     padding: 11px 0;
     width: 100%;
     padding: 31px 10px 64px;
@@ -492,7 +492,7 @@
       height: 55px;
       -webkit-box-pack: start;
           -ms-flex-pack: start;
-              justify-content: start;
+              justify-content: flex-start;
       padding: 0 20px;
     }
     .header__btn_lk, .header__btn_putAd {

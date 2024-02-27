@@ -488,7 +488,7 @@
       height: 55px;
       -webkit-box-pack: start;
           -ms-flex-pack: start;
-              justify-content: start;
+              justify-content: flex-start;
       padding: 0;
     }
     .header__btn_lk, 
