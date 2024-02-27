@@ -27,6 +27,7 @@ const navigate=useNavigate()
   const userData = checkLoginStatus(userDataRedux)
   const currentUserAdds = useSelector((state) => state.addsRedux.currentUserAdds)
   const [userPhone, setUserPhone] = useState(userData.phone ? userData.phone : '')
+ 
   const inputForms = [
     { id:1,
       name: 'name',

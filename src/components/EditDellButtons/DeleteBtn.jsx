@@ -24,8 +24,10 @@ export default function DeleteButton({postId}){
         <button
         onClick={()=>{
           refreshTokens(userAssessTokenRedux, userRefreshTokenRedux)
-          .then((tokens)=>{setProcessOn(true);setTimeout(()=>{postId?deletePost(tokens.access_token,postId):''},2000) })
-          .then(()=>{setTimeout(()=>{postId?navigate('/profile'):'';setProcessOn(false);},2500)})
+          .then((tokens)=>{setProcessOn(true);
+            setTimeout(()=>{postId?deletePost(tokens.access_token,postId):''},2000) })
+          .then(()=>{setTimeout(()=>{postId?navigate('/profile'):'';
+          setProcessOn(false);},2500)})
           }}
         type="button"
         className={`${styles.menu__btn_serch} ${styles.btn_hov02}`}

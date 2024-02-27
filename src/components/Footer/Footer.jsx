@@ -29,7 +29,9 @@ return(
       <div className={styles.footer__img}>
         <a 
 
-onClick={(e) => { e.stopPropagation()
+onClick={(e) => { 
+  
+  e.stopPropagation()
   dispatch(setNewPostReady(false));
   dispatch(setEditMode(false));
   createAddStatus

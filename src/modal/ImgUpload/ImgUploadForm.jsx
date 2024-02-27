@@ -1,13 +1,18 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useRef, useState } from 'react'
 import styles from '../CreatePost/createpost.module.css'
-// import { setImageRef } from "../../store/reducers/sliceAdds"
 import { localHost } from '../../vars/vars'
-import deleteImg from '../CreatePost/delImage'
-import { getCurrentAdd, refreshTokens } from '../../api'
-import { setTokenAccess, setTokenRefresh } from '../../store/reducers/sliceReg'
-import { setCurrentAdd, setImgDeleted } from '../../store/reducers/sliceAdds'
-// import logo from'../../img/logo.png'
+// import deleteImg from '../CreatePost/delImage'
+import {
+  getCurrentAdd,
+  //  refreshTokens
+} from '../../api'
+// import { setTokenAccess, setTokenRefresh } from '../../store/reducers/sliceReg'
+import {
+  setCurrentAdd,
+  // setImgDeleted
+} from '../../store/reducers/sliceAdds'
+import del from './delNotSentImg'
 
 export default function ImgUploadForm({
   setFile,
@@ -33,7 +38,6 @@ export default function ImgUploadForm({
   const [startDel, setStartDel] = useState(false)
 
   useEffect(() => {
-   
     postId
       ? getCurrentAdd(postId).then((data) => {
           dispatch(setCurrentAdd(data))
@@ -41,43 +45,6 @@ export default function ImgUploadForm({
       : ''
   }, [startDel])
 
-  function del() {
-    console.log('DELETiNG IMG...')
-   
-    setStartDel(true)
-    refreshTokens(userAssessTokenRedux, userRefreshTokenRedux).then(
-      (tokens) => {
-        dispatch(setTokenAccess(tokens.access_token))
-        dispatch(setTokenRefresh(tokens.refresh_token))
-        deleteImg(
-          currentAdd.id,
-          currentAdd.images[id]?.url,
-          tokens.access_token,
-        )
-          .then((data) => {
-            if (data === 'No content') {
-              
-              setSrc('')
-              imgUploadForms[id].src = ''
-
-              const newArr = imgUploadForms
-              newArr.forEach((el) => {
-                el.id === id ? (el.deleted = true) : ''
-              })
-              setImgUploadForms(newArr)
-            }
-            dispatch(setImgDeleted(true))
-            setStartDel(false)
-            console.log('DELETED IMG')
-          })
-          .catch((err) => {
-            setStartDel(false)
-            console.log(err.message)
-            console.log('err.message')
-          })
-      },
-    )
-  }
   return (
     <>
       {!editMode && (
@@ -125,6 +92,7 @@ export default function ImgUploadForm({
       )}
 
       {/* EDIT MODE */}
+
       {editMode && (
         <div
           key={Math.round(Math.random() * 1000)}
@@ -132,11 +100,19 @@ export default function ImgUploadForm({
         >
           <div
             onClick={() => {
-              console.log('delete text button')
-              console.log(id)
               setImgNumber(id)
-
-              del(realUpload)
+              del(
+                id,
+                setStartDel,
+                userAssessTokenRedux,
+                userRefreshTokenRedux,
+                dispatch,
+                currentAdd,
+                setSrc,
+                imgUploadForms,
+                setImgUploadForms,
+                realUpload,
+              )
             }}
             className={
               src || currentAdd.images[id]
@@ -167,10 +143,21 @@ export default function ImgUploadForm({
           <img
             ref={realImg}
             onClick={() => {
-              setImgNumber(id)
               src || currentAdd.images[id]
-                ? del(realUpload)
+                ? del(
+                    id,
+                    setStartDel,
+                    userAssessTokenRedux,
+                    userRefreshTokenRedux,
+                    dispatch,
+                    currentAdd,
+                    setSrc,
+                    imgUploadForms,
+                    setImgUploadForms,
+                    realUpload,
+                  )
                 : realUpload.current.click()
+              setImgNumber(id)
             }}
             style={
               src || currentAdd.images[id]
