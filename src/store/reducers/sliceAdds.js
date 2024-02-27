@@ -55,6 +55,7 @@ const sliceAdds = createSlice({
          },
 
         setAdds(state,action){
+         
            state.adds=action.payload
            localStorage.setItem('allAdds',JSON.stringify(action.payload))  
         },

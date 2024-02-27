@@ -6,7 +6,7 @@ import styles from './article.module.css'
 import logo from '../../img/logo.png'
 import Header from '../../components/Header/Header'
 import dataFormat from '../../functions/dataformat'
-import { getCurrentComment, getUserByToken, refreshTokens } from '../../api'
+import { getAllAds, getCurrentComment, getUserByToken, refreshTokens } from '../../api'
 import Footer from'../../components/Footer/Footer'
 import ToMainButton from '../../components/ToMainButton/ToMainButton'
 import PhoneButton from '../../components/PhoneButton/PhoneButton'
@@ -15,6 +15,7 @@ import DeleteButton from '../../components/EditDellButtons/DeleteBtn'
 import { setUserData } from '../../store/reducers/sliceReg'
 import Comments from '../../modal/Comments/Comments'
 import LogoSky from '../../components/Logo/Logo'
+import { setAdds } from '../../store/reducers/sliceAdds'
 
 
 export default function Article() {
@@ -40,6 +41,13 @@ export default function Article() {
  const currentAddUserId = currentAdd.user.id
  const postId=currentAdd.id
  const token = localStorage.getItem('user_token')
+
+ useEffect(() => {
+    
+  getAllAds().then((data) => {
+    dispatch(setAdds(data))
+  })
+}, [])
 
 
 

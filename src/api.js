@@ -135,7 +135,7 @@ export async function getUserByToken(token) {
 export async function refreshTokens(userAssessTokenRedux, userRefreshTokenRedux) 
 
 
-{console.log('refresh START')
+{
   try {
     
     const token = localStorage.getItem('user_token')

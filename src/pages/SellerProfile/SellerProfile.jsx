@@ -1,3 +1,5 @@
+import { useSelector } from 'react-redux'
+import { useEffect, useState } from 'react'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import ToMainButton from '../../components/ToMainButton/ToMainButton'
@@ -6,12 +8,28 @@ import styles from'./seller.module.css'
 import SellerInfo from '../../components/SellerInfo/SellerInfo'
 import LogoSky from '../../components/Logo/Logo'
 
+
+
 export default function SellerProfile() {
 
    const currentAddLocal = JSON.parse(localStorage.getItem('currentAdd'))
    const allAddsLocal = JSON.parse(localStorage.getItem('allAdds'))
-   const sellersArray = allAddsLocal.filter((el)=>{return el.user.id===currentAddLocal.user.id})
-   const seller = sellersArray[0].user
+   const currentAddRedux = useSelector(state=>state.addsRedux.currentAdd)
+   const [sellersArray, setSellersArray]= useState([])
+   const [seller, setSeller]=useState({})
+  
+  useEffect(() => {
+      
+      const sellersArrayOld = 
+        allAddsLocal.filter((el)=>{
+        let newUserId;
+        currentAddRedux.length!==0?newUserId=currentAddRedux.user.id:newUserId=currentAddLocal.user.id
+          return el.user.id===newUserId})
+          setSellersArray(sellersArrayOld) ;
+          setSeller(sellersArrayOld[0]?.user)      
+       
+  }, [])
+
    return (
     <div className={styles.wrapper}>
       <div className={styles.container}>

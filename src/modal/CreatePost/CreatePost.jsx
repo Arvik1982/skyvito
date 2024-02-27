@@ -35,11 +35,11 @@ export default function CreatePost({ editMode, postId }) {
     : (formName = 'Новое объявление')
 
   const [imgUploadForms, setImgUploadForms] = useState([
-    { id: 0, img: '', src: '',deleted:false },
-    { id: 1, img: '', src: '',deleted:false },
-    { id: 2, img: '', src: '',deleted:false },
-    { id: 3, img: '', src: '',deleted:false },
-    { id: 4, img: '', src: '',deleted:false },
+    { id: 0, img: '', src: '', deleted:false },
+    { id: 1, img: '', src: '', deleted:false },
+    { id: 2, img: '', src: '', deleted:false },
+    { id: 3, img: '', src: '', deleted:false },
+    { id: 4, img: '', src: '', deleted:false },
   ])
 
   useEffect(() => {
