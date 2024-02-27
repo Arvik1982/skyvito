@@ -4,15 +4,16 @@ import { useDispatch, useSelector } from 'react-redux'
 import styles from './header.module.css'
 import checkLoginStatus from '../../functions/checkLoginStatus'
 import CreatePost from '../../modal/CreatePost/CreatePost'
-import { setCreateAddStatus } from '../../store/reducers/sliceAdds'
+import { setCreateAddStatus, setEditMode, setNewPostReady } from '../../store/reducers/sliceAdds'
 import closeModal from '../../functions/closeModal'
 import logout from '../../functions/logOut'
 import { setError } from '../../store/reducers/sliceError'
 
 
-export default function Header({ noDisplay, page }) {
+export default function Header({ noDisplay, page,postId }) {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const editMode=useSelector((state) => state.addsRedux.editMode)
   const userData = useSelector((state) => state.authRedux.userData)
   const createAddStatus = useSelector((state) => state.addsRedux.createAdd)
   const loginStatus = checkLoginStatus(userData)
@@ -25,19 +26,20 @@ export default function Header({ noDisplay, page }) {
 
   return (
     <header
-      onKeyDown={() => {
+    
+        onClick={(e) => {
+        e.stopPropagation()
         closeModal(dispatch, createAddStatus)
       }}
-      onClick={() => {
-        
-        closeModal(dispatch, createAddStatus)
-      }}
+      onMouseUp={()=>{}}
       className={styles.header}
     >
       <nav className={styles.header__nav}>
         <button
           type="button"
-          onClick={() => {
+          onClick={(e) => { e.stopPropagation()
+            dispatch(setNewPostReady(false));
+            dispatch(setEditMode(false));
             createAddStatus
               ? dispatch(setCreateAddStatus(false))
               : dispatch(setCreateAddStatus(true))
@@ -74,7 +76,7 @@ export default function Header({ noDisplay, page }) {
           </button>
         )}
       </nav>
-      {createAddStatus && <CreatePost />}
+      {createAddStatus && <CreatePost postId={postId} editMode={editMode} />}
     </header>
   )
 }

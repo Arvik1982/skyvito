@@ -18,30 +18,34 @@ const regSlice = createSlice({
         userTmpSurName:'',
         userTmpCity:'',
         userTmpPhone:'',
+        
 
        
 
     },
     reducers:{
+
+      
+
         setUserTmpPhone(state,action){
             state.userTmpPhone=action.payload
-            console.log(state.userTmpPhone)
+            
             
         },
         setUserTmpCity(state,action){
             state.userTmpCity=action.payload
-            console.log(state.userTmpCity)
+            
             
         },
         setUserTmpName(state,action){
             state.userTmpName=action.payload
-            console.log(state.userTmpName)
+          
             
         },
         setUserTmpSurName(state,action){
             state.userTmpSurName=action.payload
             
-            console.log(state.userTmpSurName)
+            
         },
         setUserMail(state,action){
             localStorage.setItem('userMail',action.payload)
@@ -56,10 +60,7 @@ const regSlice = createSlice({
             state.password2=action.payload
             
         },
-        // setUserToken(state,action){
-        //     state.userToken=action.payload
-            
-        // },
+               
         setUserName(state,action){
             state.userName=action.payload
             
@@ -73,9 +74,11 @@ const regSlice = createSlice({
             
         },
         setUserData(state,action){
+           
             state.userData=action.payload
             let userUid; 
             action.payload!==null? userUid = action.payload.id:userUid = ''
+           
             localStorage.setItem('userUID', userUid)
             localStorage.setItem('userData', JSON.stringify(action.payload))
                 
@@ -85,7 +88,7 @@ const regSlice = createSlice({
             
         },
         setTokenAccess(state,action){
-            console.log(state.access_token)
+           
             state.access_token=action.payload
             
         },

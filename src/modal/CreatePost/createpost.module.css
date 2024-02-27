@@ -26,6 +26,10 @@
   ul li {
     list-style: none;
   }
+
+  .display{
+    display: none;
+  }
   
   @font-face {
     font-family: 'StratosSkyeng';
@@ -46,20 +50,6 @@
   a {
     font-family: 'Roboto', sans-serif;
   }
-/*   
-  .wrapper {
-    width: 100%;
-    min-height: 100%;
-    overflow: hidden;
-  }
-  
-  .container_bg {
-    max-width: 100%;
-    height: 100vh;
-    margin: 0 auto;
-    position: relative;
-    background-color: #F4F5F6;
-  } */
   
   .modal__btn_close_line:hover::after, .modal__btn_close_line:hover::before {
     background-color: #0080C1;
@@ -75,16 +65,6 @@
   }
   
   .modal__block {
-    /* width: 100%;
-    height: 100%;
-    position: fixed;
-    z-index: 9999;
-    left: calc(50% - (600px/2));
-    top: 40px;
-    opacity: 1;
-    backdrop-filter: blur(15px);
-    background-color: rgba(3, 162, 128, 0.15); */
-    
     position: fixed; 
     top: 0;
     left: 0;
@@ -195,7 +175,9 @@
     color: #000000;
   }
   
-  .form_newArt__input, .form-newArt__area, .form_newArt__input_price {
+  .form_newArt__input, 
+  .form-newArt__area, 
+  .form_newArt__input_price {
     padding: 13px 19px;
     background: #FFFFFF;
     border: 1px solid rgba(0, 0, 0, 0.2);
@@ -326,8 +308,44 @@
     background-color: #F0F0F0;
     z-index: -1;
   }
+
+  .delete__img_text{
+    /* display: none; */
+    text-align: center;
+    font-size: large;
+    font-weight: bold;
+    line-height: 90px;
+    min-width: 80px;  
+    min-height: 80px;
+    color: rgb(237, 12, 53);
+    z-index: 500;
+    position:absolute;
+    font-Size:20px;
+    /* margin-top:33px;
+    margin-left:37px; */
+    cursor:pointer
+
+  }
+
+
+  .delete__img_text:hover{
+    min-width: 80px;  
+    min-height: 80px;
+    display: block;
+    font-Size:31px;
+    /* margin-left:33px; 
+    margin-top:29px; */
+    color:red; 
+  }
+
+  .delete__img_text:hover::before{
+    content: 'delete';
+  }
+
+
   
-  .form_newArt__img_cover::after, .form_newArt__img_cover::before {
+  .form_newArt__img_cover::after, 
+  .form_newArt__img_cover::before {
     content: "";
     position: absolute;
     width: 30px;
@@ -361,23 +379,31 @@
   }
   
   .form_newArt__input_price_cover {
+    
     width: 24px;
     height: 24px;
     font-size: 16px;
     line-height: 24px;
     color: #000000;
-    position: absolute;
+    /* position: absolute; */
     bottom: 13px;
     left: 170px;
-    z-index: 0;
+    z-index: 50;
     background-color: #FFFFFF;
   }
+
+  .price__block{
+    display: flex;
+    align-items: center;
+    
+  }
   
-  .form_newArt__input_price_cover::after {
+  .form_newArt__input_price_cover::after 
+  {
     content: "\A0 \20BD";
     width: 24px;
     height: 24px;
-    position: absolute;
+    /* position: absolute; */
     font-size: 16px;
     line-height: 24px;
     color: #000000;
@@ -432,6 +458,18 @@
     width: 181px;
     height: 50px;
     background: #D9D9D9;
+    border: 1px solid #D9D9D9;
+    border-radius: 6px;
+    font-size: 16px;
+    line-height: 24px;
+    color: #FFFFFF;
+  }
+
+  .form_newArt__btn_pub_ready{
+    margin-top: 10px;
+    width: 181px;
+    height: 50px;
+    background: #0492d8;
     border: 1px solid #D9D9D9;
     border-radius: 6px;
     font-size: 16px;
@@ -647,6 +685,11 @@
       color: #000000;
     }
     .form_newArt__btn_pub {
+      margin-top: 10px;
+      width: 100%;
+      height: 46px;
+    }
+    .form_newArt__btn_pub_ready {
       margin-top: 10px;
       width: 100%;
       height: 46px;

@@ -1,7 +1,11 @@
+
 import { localHost } from "../../vars/vars"
+import getUserAddsByToken from "../../functions/getUserAddsByToken"
 
 
-export default  function uploadImg(token,file,id,imgUploadForms){
+export default  function uploadImg(token,file,id,imgUploadForms,
+   dispatch
+   ){
  
   const data1 = new FormData()
   const data2 = new FormData()
@@ -28,11 +32,31 @@ export default  function uploadImg(token,file,id,imgUploadForms){
   }).catch((er)=>{throw new Error(er)})
     .then((response)=>
     {if(!response.ok){throw new Error('Недопустимый формат файла')};
-    return response.json()})
+    return response.json()
+  })
  }
-sendImg(data1).catch((er)=>{console.log(er.message)})
-sendImg(data2).catch((er)=>{console.log(er.message)})
-sendImg(data3).catch((er)=>{console.log(er.message)})
-sendImg(data4).catch((er)=>{console.log(er.message)})
-sendImg(data5).catch((er)=>{console.log(er.message)}) 
+
+if(!imgUploadForms[0].deleted){
+  
+imgUploadForms[0].img?sendImg(data1).catch((er)=>{console.log(er.message)}):''}
+
+if(!imgUploadForms[1].deleted){
+  console.log(imgUploadForms[1].deleted)
+imgUploadForms[1].img?sendImg(data2).catch((er)=>{console.log(er.message)}):''}
+
+if(!imgUploadForms[2].deleted){
+  
+imgUploadForms[2].img?sendImg(data3).catch((er)=>{console.log(er.message)}):''}
+
+if(!imgUploadForms[3].deleted){
+  
+imgUploadForms[3].img?sendImg(data4).catch((er)=>{console.log(er.message)}):''}
+
+if(!imgUploadForms[4].deleted){
+  
+imgUploadForms[4].img?sendImg(data5).catch((er)=>{console.log(er.message)}):''}
+
+getUserAddsByToken(dispatch)
+
+
 }

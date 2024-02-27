@@ -9,19 +9,53 @@ const sliceAdds = createSlice({
         searchResult:[],
         currentUserAdds:[],
         createAdd:false,
+        newPostReady:false,
+        newPostLoadSuccess:false,
+        editMode:false,
+        searchButtonClick:false,
+        imageRef:'',
+        imageRefId:'',
+        imgDeleted:false
+       
         
     },
     reducers:{
 
+      setImgDeleted(state,action){
+         
+         state.imgDeleted=action.payload
+         
+         
+     },
+       
 
-  
+        setEditMode(state,action){
+            
+            state.editMode=action.payload
+             
+         },
+
+        setNewPostLoadSuccess(state,action){
+            
+            state.newPostLoadSuccess=action.payload
+             
+         },
+
+
+        setNewPostReady(state,action){
+            
+            state.newPostReady=action.payload
+             
+         },
 
         setCreateAddStatus(state,action){
+
             state.createAdd=action.payload
              
          },
 
         setAdds(state,action){
+         
            state.adds=action.payload
            localStorage.setItem('allAdds',JSON.stringify(action.payload))  
         },
@@ -33,7 +67,7 @@ const sliceAdds = createSlice({
 
          setCurrentUserAdds(state,action){
             state.currentUserAdds=action.payload
-            console.log(state.currentUserAdds)},
+           },
             
 
          setSearchData(state,action){
@@ -63,11 +97,29 @@ const sliceAdds = createSlice({
 
                 ||String(searchStr).toLowerCase()
                 .includes(String(el.title).split(' ').join('').toLowerCase())
-                )
+                )         
+        
             })
             
             resultArray?state.searchResult=resultArray:state.searchResult=JSON.parse(localStorage.getItem('allAdds'))
+         },
+
+         setSearchButtonClick(state,action){
+            
+            
+            state.searchButtonClick=action.payload
+             
+         },
+
+         setImageRef(state,action){
+            state.imageRef=action.payload
+             
+         },
+         setImageRefId(state,action){
+            state.imageRefId=action.payload
+             
          }
+
         }
 })
 
@@ -76,5 +128,13 @@ export const{setAdds,
       setSearchData,
        setCurrentUserAdds,
        setCreateAddStatus,
-       setNewPostImg}=sliceAdds.actions;
+       setNewPostImg,
+       setNewPostReady,
+       setNewPostLoadSuccess,
+    setEditMode, 
+    setSearchButtonClick,
+    setImageRef,
+    setImageRefId,
+    setImgDeleted
+}=sliceAdds.actions;
 export default sliceAdds.reducer

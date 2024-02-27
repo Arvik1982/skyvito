@@ -12,6 +12,18 @@ export async function getAllAds() {
   return newData
 }
 
+export async function getCurrentAdd(id) {
+  const response = await fetch(`http://localhost:8090/ads/${id}`, {
+    method: 'GET',
+  })
+  if (!response.ok) {
+    throw new Error('Ошибка сервера')
+  }
+  const newData = await response.json()
+
+  return newData
+}
+
 export async function getCurrentComment(id) {
   const response = await fetch(`http://localhost:8090/ads/${id}/comments`, {
     method: 'GET',
@@ -61,7 +73,7 @@ export async function registration(email, password, name, surname, city, id) {
       throw new Error(err)
     }
     const newUser = await response.json()
-    console.log(newUser)
+    
     return newUser
   } catch (error) {
     throw new Error(error.message)
@@ -120,47 +132,71 @@ export async function getUserByToken(token) {
   return newUserByToken
 }
 
-export async function refreshTokens() {
+export async function refreshTokens(userAssessTokenRedux, userRefreshTokenRedux) 
+
+
+{
   try {
-    console.log('refresh')
     
     const token = localStorage.getItem('user_token')
     const refresh = localStorage.getItem('user_token_refresh')
+
+   
     
     const responseRefresh = await fetch('http://localhost:8090/auth/login', {
       method: 'PUT',
       body: JSON.stringify({
-        access_token: `${token}`,
-        refresh_token: `${refresh}`,
+        access_token: `${userAssessTokenRedux?userAssessTokenRedux:token}`,
+        refresh_token: `${userRefreshTokenRedux?userRefreshTokenRedux:refresh}`,
       }),
       headers: {
         'content-type': 'application/json',
       },
     })
-    if (!responseRefresh.ok) {
+    
+    
+      if (!responseRefresh.ok && responseRefresh.status!==401 ) {
+        const errResponse = await responseRefresh.json()
+        
+        throw new Error(errResponse?.detail)
+  
+      }
 
-      const errResponse = await responseRefresh.json()
-      throw new Error(errResponse?.detail)
+      if (!responseRefresh.ok && responseRefresh.status===401 ) {
+        console.log('Too fresh tokens, OK')
+        const dataRefresh = 
+        {
+          access_token: token,
+          refresh_token: refresh,
+          
+        }
+        
+       return dataRefresh
+      }
+  
 
-    }
 
     const dataRefresh = await responseRefresh.json()
 
-    if (dataRefresh.access_token && dataRefresh.access_token) {
-      console.log('tokens renewed')
+    if (dataRefresh.access_token && dataRefresh.refresh_token) {
+      
       localStorage.setItem('user_token', dataRefresh.access_token)
       localStorage.setItem('user_token_refresh', dataRefresh.refresh_token)
     }
    
     return dataRefresh
+    
 
   } catch (error) {
-    
-    throw new Error(error)
+    throw new Error(error.message)
   }
+
 }
 
+
+
 export async function getCurrentUserAdds(accessTokenNew) {
+  console.log('getCurrentUserAdds START')  
 
   try{
   const currentUserAddsResp = await fetch('http://127.0.0.1:8090/ads/me', {
@@ -170,6 +206,7 @@ export async function getCurrentUserAdds(accessTokenNew) {
       Authorization: `Bearer ${accessTokenNew}`,
     },
   })
+  
   if (!currentUserAddsResp.ok) {
 
   const currentUserAdds= await currentUserAddsResp.json()
@@ -177,19 +214,20 @@ export async function getCurrentUserAdds(accessTokenNew) {
 
   }
   const userAdds = await currentUserAddsResp.json()
-  
+  console.log('getCurrentUserAdds OK')
   return userAdds
 }
 catch(error){
+
   
+
   throw new Error(error)
+
 }
-}
+};
 
 export async function changeUser(accessTokenNew, userNewData) {
-  console.log(typeof(userNewData.email))
-  console.log(userNewData.email)
-  console.log(userNewData)
+
   try{
   const currentUserAddsResp = await fetch('http://127.0.0.1:8090/user', {
     method: 'PATCH',
@@ -202,14 +240,14 @@ export async function changeUser(accessTokenNew, userNewData) {
     },
   })
   if (!currentUserAddsResp.ok) {
-
   const currentUserAdds= await currentUserAddsResp.json()
-  console.log(currentUserAdds)
+
+ 
   throw new Error(currentUserAdds?.detail)
 
   }
   const userAdds = await currentUserAddsResp.json()
-  console.log(userAdds)
+  
   return userAdds
 }
 catch(error){
