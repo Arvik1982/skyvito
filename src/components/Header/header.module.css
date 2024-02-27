@@ -15,7 +15,7 @@
             align-items: center;
     -webkit-box-pack: end;
         -ms-flex-pack: end;
-            justify-content: end;
+            justify-content: flex-end;
   }
 .el_display{
   display: none;
