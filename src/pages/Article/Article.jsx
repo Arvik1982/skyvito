@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { localHost } from '../../vars/vars'
@@ -18,6 +19,7 @@ import LogoSky from '../../components/Logo/Logo'
 import { setAdds } from '../../store/reducers/sliceAdds'
 
 
+
 export default function Article() {
 
   const dispatch = useDispatch()
@@ -33,6 +35,9 @@ export default function Article() {
   const [displayButtons, setDisplayButtons]=useState(false)
   const [comments, setComments] = useState([])
   const [commentsOpen, setCommentsOpen]= useState(false)
+
+ 
+
   const [mainImg, setMainImg]= useState( currentAdd.images[0]?.url
     ? `${localHost}${currentAdd.images[0]?.url} `
     : `${logo}`)
@@ -63,7 +68,8 @@ export default function Article() {
       getUserByToken(tokens.access_token)
       .then((data)=>{
         dispatch(setUserData(data));
-        setDisplayButtons(true)})
+        setDisplayButtons(true);
+        })
       .catch((err)=>{console.log(err)})
 
     })
@@ -129,7 +135,7 @@ export default function Article() {
                           className={`${styles.img_bar_mob__circle} ${styles.circle_active}`}
                         >
                           <img 
-                             key={Math.round(Math.random()*1000000000)}
+                            key={Math.round(Math.random()*1000000000)}
                             className={` ${styles.img_bar_mob__circle}`}
                             src={el?.url ? `${localHost}${el?.url}` : `${logo}`}
                             alt="element"
@@ -161,38 +167,40 @@ export default function Article() {
                     </span>
                   </div>
 {/* comments */}
-
           <Comments 
           setComments={setComments} 
           commentsOpen={commentsOpen} 
           setCommentsOpen={setCommentsOpen} 
           comments={comments}
           commentId={postId}/>
-          
-                  <div className={`${styles.comments__list} ${styles.comments_visible}`}>
-                  {comments.map((el) => {
-                      return (
-                        <div key={el.id}>
-                          <h2>-{el.author.name}</h2>
-                          <h3>{el.text}</h3>
-                        </div>
-                      )
-                    })}
-                  </div>
 {/* comments */}
                   <p className={styles.article__price}>{currentAdd.price} руб.</p>
-                  {displayButtons&&<>
-                  
-                  {currentAddUserId===userId&& <div
-                    // key={showButtons}
-                     className={styles.button__block_edit}> 
-                  <EditButton />
-                  <DeleteButton postId={postId} />
-                  </div> }
-                  {currentAddUserId!==userId&& 
-                  <PhoneButton phone={currentAdd.user.phone}/>}
-                  </>}
-                  <div className={`${styles.article__author} ${styles.author}`}>
+
+{currentAddUserId===userId&& 
+                  <div
+                      className={styles.button__block_edit}>
+{!displayButtons? <SkeletonTheme 
+                       baseColor="aliceblue" 
+                       highlightColor="rgb(217, 222, 226)">
+                       <Skeleton className={styles.skelet_edit} />
+                      </SkeletonTheme>: <EditButton />
+                      }
+
+{!displayButtons? <SkeletonTheme 
+                       baseColor="aliceblue" 
+                       highlightColor="rgb(217, 222, 226)">
+                       <Skeleton className={styles.skelet_delete} />
+                  </SkeletonTheme>: <DeleteButton postId={postId} />
+                  }
+
+                  </div> 
+                  }
+
+{currentAddUserId!==userId&& 
+                  <PhoneButton phone={currentAdd.user.phone}/>
+                  }
+
+                <div className={`${styles.article__author} ${styles.author}`}>
                     <div className={styles.author__img}>
                       <Link to='/seller'>
                       <img className={styles.seller__avatar}
@@ -215,7 +223,8 @@ export default function Article() {
                         {currentAdd.user.sells_from}
                       </p>
                     </div>
-                  </div>
+                </div>
+
                 </div>
               </div>
             </div>

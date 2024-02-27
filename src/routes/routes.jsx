@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom"
 import { useSelector } from "react-redux"
 import Main from'../pages/Main/Main'
 import Article from "../pages/Article/Article"
-import MyArticle from "../pages/MyArticle/MyArticle"
+// import MyArticle from "../pages/MyArticle/MyArticle"
 import Profile from "../pages/Profile/Profile"
 import SellerProfile from "../pages/SellerProfile/SellerProfile"
 import AuthorizationPage from "../pages/Autorization/AuthorizationPage"
@@ -28,7 +28,7 @@ export default function AppRoutes(){
         <Routes>
             <Route path="/" element={<Main/>}/>
             <Route path="/article" element={<Article/>}/>
-            <Route path="/myarticle" element={<MyArticle/>}/>
+            {/* <Route path="/myarticle" element={<MyArticle/>}/> */}
             
             <Route path="*" element={<ErrorPage/>}/>
             <Route path="/login" element={<AuthorizationPage/>}/>

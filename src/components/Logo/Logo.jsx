@@ -1,15 +1,22 @@
+import { useNavigate } from 'react-router-dom'
+
 import styles from'./logo.module.css'
 import logo from'../../img/logo.png'
 
 export default function LogoSky(){
+    const navigate = useNavigate()
 
     return(<>
-        <a className={styles.search__logo_link} href="#" target="_blank">
-        <img className={styles.search__logo_img} src={logo} alt="logo"/>
-    </a>
-    <a className={styles.search__logo_mob_link} href="#" target="_blank">
-        <img className={styles.search__logo_mob_img} src="img/logo-mob.png" alt="logo"/>
-    </a>
+    <div className={styles.search__logo_link} >
+        <img
+         onClick={()=>{navigate('/')}}
+         className={styles.search__logo_img} src={logo} alt=""/>
+    </div>
+    <div className={styles.search__logo_mob_link} >
+        <img 
+        onClick={()=>{navigate('/')}}
+        className={styles.search__logo_mob_img} src="img/logo-mob.png" alt=""/>
+    </div>
     </>
     )
 }

@@ -19,10 +19,23 @@ export default function Header({ noDisplay, page,postId }) {
   const loginStatus = checkLoginStatus(userData)
   const [isLogin, setIsLogin] = useState('')
 
+
+
   useEffect(() => {
     
     loginStatus.name !== 'No_User' ? setIsLogin(true) : setIsLogin(false)
   }, [])
+
+  const createPostClick =(e)=>{
+
+    e.stopPropagation()
+    dispatch(setNewPostReady(false));
+    dispatch(setEditMode(false));
+    createAddStatus
+      ? dispatch(setCreateAddStatus(false))
+      : dispatch(setCreateAddStatus(true))
+  }
+  
 
   return (
     <header
@@ -37,13 +50,10 @@ export default function Header({ noDisplay, page,postId }) {
       <nav className={styles.header__nav}>
         <button
           type="button"
-          onClick={(e) => { e.stopPropagation()
-            dispatch(setNewPostReady(false));
-            dispatch(setEditMode(false));
-            createAddStatus
-              ? dispatch(setCreateAddStatus(false))
-              : dispatch(setCreateAddStatus(true))
-          }}
+          onClick={(e) => {
+           createPostClick(e)
+          }
+        }
           className={`${styles.header__btn_putAd} ${noDisplay ? styles.el_display : ''}`}
         >
           Разместить объявление

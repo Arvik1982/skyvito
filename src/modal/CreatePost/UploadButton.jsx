@@ -1,15 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styles from'./createpost.module.css'
-import uploadTxt from './createTxtPost_api'
-import uploadImg from './createImgPost_api'
-import { refreshTokens } from '../../api'
-import { setCreateAddStatus, setNewPostLoadSuccess, setNewPostReady} from '../../store/reducers/sliceAdds';
-import changeTxt from './changePostTxt_api';
+import uploadButtonClick from './uploadButtonClick';
+import saveUploadButtonClick from './saveCangesButtonClick';
 
-
-
-export default function UploadButton({
+export default function UploadButton(
+  {
   file,
   title,
   description,
@@ -17,38 +13,37 @@ export default function UploadButton({
   imgUploadForms,
   editMode, 
   postId
-}){
+  }
+  ){
 
   const userAssessTokenRedux = useSelector((state) => state.authRedux.access_token);
   const userRefreshTokenRedux = useSelector((state) => state.authRedux.access_refresh);
 
   const navigate =useNavigate()
   const dispatch=useDispatch()
-  const newPostReady = useSelector((state) => state.addsRedux.newPostReady); 
-     
-  
+
+  const newPostReady = useSelector((state) => state.addsRedux.newPostReady);
+
   return(<>
   {!editMode &&  
   <>
   {!newPostReady&&<h2 style={{marginTop:'10px', color:'red', fontSize:'15px' }}> Заполните данные формы </h2>}
   <button
         disabled={newPostReady?false:true}
-        onClick={(e)=>{e.stopPropagation()
-         
-          // dispatch(setNewPostReady(false));
-          refreshTokens(userAssessTokenRedux, userRefreshTokenRedux)
-              .then((tokens)=>{ 
-                dispatch(setNewPostLoadSuccess(false));
-                   uploadTxt(tokens.access_token,title,description,price)  
-                   .then((txtData)=>{
-                    uploadImg(tokens.access_token,file,txtData.id,imgUploadForms,dispatch);
-                  })
-                    .catch((errTxt)=>{console.log(errTxt)})})
-                    .then(()=>{
-                      dispatch(setNewPostLoadSuccess(true));
-                      dispatch(setCreateAddStatus(false))})
-                    .then(()=>{navigate('/profile');dispatch(setNewPostReady(false))})
-                    .catch((errTokens)=>{console.log(errTokens)})
+        onClick={(e)=>{
+
+          uploadButtonClick(
+            e,
+            dispatch,
+            navigate,
+            title,
+            description,
+            price,
+            file,
+            imgUploadForms,
+            userAssessTokenRedux, 
+            userRefreshTokenRedux)
+          
          }}
           type="button"
           className={
@@ -61,8 +56,8 @@ export default function UploadButton({
         }
         
 {/* CHANGE */}
-        {editMode && 
-        
+
+        {editMode &&
         <>
         {!newPostReady&&<h2 style={{marginTop:'5px', color:'red', fontSize:'15px' }}>
 
@@ -70,23 +65,20 @@ export default function UploadButton({
 
         <button
         disabled={newPostReady?false:true}
-        onClick={(e)=>{ e.stopPropagation()
-          
-          dispatch(setNewPostReady(false));
-          refreshTokens(userAssessTokenRedux, userRefreshTokenRedux)
-              .then((tokens)=>{ 
-                dispatch(setNewPostLoadSuccess(false));
-                changeTxt(tokens.access_token,title,description,price,postId)
-                 .then((txtData)=>{
-                 uploadImg(tokens.access_token,file,txtData.id,imgUploadForms,dispatch)
-                
-                }
-                    ).catch((errTxt)=>{console.log(errTxt)})})
-                    .then(()=>{
-                    dispatch(setNewPostLoadSuccess(true));
-                    dispatch(setCreateAddStatus(false))})
-                    .then(()=>{navigate('/profile')})
-                    .catch((errTokens)=>{console.log(errTokens)})
+        onClick={(e)=>{ 
+
+          saveUploadButtonClick(e, 
+            dispatch,
+            navigate,
+            title,
+            description,
+            price,
+            file,
+            imgUploadForms,
+            postId,
+            userAssessTokenRedux,
+            userRefreshTokenRedux)
+        
          }}
           type="button"
           className={

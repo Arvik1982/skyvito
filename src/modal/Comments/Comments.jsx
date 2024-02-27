@@ -4,7 +4,7 @@ import styles from './Comments.module.css'
 import { localHost } from '../../vars/vars';
 import createComment from './createComment';
 import { getCurrentComment, refreshTokens } from '../../api';
-
+import dataFormat from'../../functions/dataformat'
 
 
 export default function Comments({ commentsOpen, setCommentsOpen, comments, setComments }) {
@@ -14,14 +14,29 @@ const userRefreshTokenRedux = useSelector((state) => state.authRedux.access_refr
 const [commentText, setCommentText]=useState('')
 const currentAdd= JSON.parse(localStorage.getItem('currentAdd'))
 
+const sendCommentClick = ()=>{
 
+  !commentText?'':
+  refreshTokens(userAssessTokenRedux,userRefreshTokenRedux)
+  .then((tokens)=>{
+  createComment(tokens.access_token, commentText)
+  .then(()=>{
+  setCommentText('');
+  getCurrentComment(currentAdd.id)
+  .then((dataComments) => {
+      let dataArray = []
+      dataArray = dataComments
+      setComments(dataArray)
+    })
+  
+})})
 
+}
   return (
     <div 
       className={commentsOpen ? styles.modal__block : styles.noDisplay}>
 
       <div className={styles.modal__content}>
-
       
         <h3 className={styles.modal__title}>Отзывы о товаре</h3>
 
@@ -42,12 +57,6 @@ const currentAdd= JSON.parse(localStorage.getItem('currentAdd'))
               
               {!commentText&&<label style={{color:'red'}} >
                 Заполните поле с отзывом</label>}
-              
-                {/* commentText.value = `QUOTE_BEGIN${commentText.value
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")}QUOTE_END`; */}
-
-
               <textarea
                 value={commentText}
                 onChange={(e)=>{setCommentText(e.target.value);}}
@@ -62,20 +71,7 @@ const currentAdd= JSON.parse(localStorage.getItem('currentAdd'))
             
             <button
             disabled={commentText?false:true}
-            onClick={()=>{
-              !commentText?'':
-                    refreshTokens(userAssessTokenRedux,userRefreshTokenRedux).then((tokens)=>{
-                    createComment(tokens.access_token, commentText).then(()=>{
-                    setCommentText('')
-                      
-                    getCurrentComment(currentAdd.id).then((dataComments) => {
-      
-                        let dataArray = []
-                        dataArray = dataComments
-                        setComments(dataArray)
-                      })
-                    
-                })})}}
+            onClick={ sendCommentClick }
               type='button'
               className={`${styles.form_newArt__btn_pub} ${styles.btn_hov02}`}
               id="btnPublish"
@@ -85,10 +81,10 @@ const currentAdd= JSON.parse(localStorage.getItem('currentAdd'))
           </form>
 
           <div className={`${styles.modal__reviews} ${styles.reviews}`}>
+
  {/* COMMENTS */}
             
-            
-              {comments.map((el)=>{return(
+               {comments.map((el)=>{return(
                 <div key={el.id} className={`${styles.reviews__review} ${styles.review}`}>
                 <div className={styles.review__item}>
                 <div className={styles.review__left}>
@@ -106,7 +102,9 @@ const currentAdd= JSON.parse(localStorage.getItem('currentAdd'))
                   <p className={`${styles.review__name} ${styles.font_t}`}>
                     {' '}
                     {el.author.name}
-                    <span>14 августа</span>
+
+
+                    <span>{dataFormat( el.created_on)}</span>
                   </p>
                   <h5 className={`${styles.review__title} ${styles.font_t}`}>
                     Комментарий
