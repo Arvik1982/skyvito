@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import ReactPaginate from "react-paginate";
+
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 
 import { getAllAds } from '../../api'
@@ -21,6 +23,23 @@ export default function Main() {
   const [allAds, setAllAds] = useState([])
   const [loading, setLoading] = useState(true)
   const dispatch =useDispatch()
+
+
+
+
+  const [pageNumber, setPageNumber] = useState(0)
+  const onPageChange = ({ selected }) => {
+    setPageNumber(selected)
+  }
+  const coursesOnPage = 12
+  const pagesVisited = pageNumber * coursesOnPage
+  const displayAddsArray = allAds.slice(
+    pagesVisited,
+    pagesVisited + coursesOnPage,
+  )
+  const pageCount = Math.ceil(allAds.length / coursesOnPage)
+
+
   
   
 
@@ -53,7 +72,11 @@ export default function Main() {
               <div className={styles.main__content}>
                 
                 <div className={`${styles.content__cards} ${styles.cards}`}>
-                  {allAds.map((add) => {
+                  {
+                  // allAds
+                  
+                  
+                  displayAddsArray?.map((add) => {
                     
                     return( loading?
                       <SkeletonTheme 
@@ -68,12 +91,31 @@ export default function Main() {
                       <AddCard key={add.id} add={add} />)
                   })}
                 </div>
+
+     
+
               </div>
+              <ReactPaginate 
+        previousLabel="<<"
+        nextLabel=">>"
+        pageCount={pageCount}
+        onPageChange={onPageChange}
+        containerClassName={styles.paginateButtons}
+        previousClassName={styles.paginatePrevButtons}
+        nextClassName={styles.paginateNextButtons}
+        disabledClassName={pageCount<=1?styles.paginateDisabled:''}
+        activeClassName={styles.paginateActive}
+      />
+       
+
+
             </div>
+            
           </main>
             <Footer/>
           </div>
       </div>
+
     </div>
   )
 }

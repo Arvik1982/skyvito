@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './Comments.module.css'
 import { localHost } from '../../vars/vars';
 import createComment from './createComment';
@@ -12,7 +12,14 @@ export default function Comments({ commentsOpen, setCommentsOpen, comments, setC
 const userAssessTokenRedux = useSelector((state) => state.authRedux.access_token);
 const userRefreshTokenRedux = useSelector((state) => state.authRedux.access_refresh);
 const [commentText, setCommentText]=useState('')
+const [login, setLogin]=useState(false)
 const currentAdd= JSON.parse(localStorage.getItem('currentAdd'))
+const token = localStorage.getItem('user_token')
+
+
+useEffect(()=>{
+  userAssessTokenRedux || token ? setLogin(true):setLogin(false)
+},[])
 
 const sendCommentClick = ()=>{
 
@@ -58,6 +65,8 @@ const sendCommentClick = ()=>{
               {!commentText&&<label style={{color:'red'}} >
                 Заполните поле с отзывом</label>}
               <textarea
+              
+                disabled={userAssessTokenRedux || Boolean(token)?false:true}
                 value={commentText}
                 onChange={(e)=>{setCommentText(e.target.value);}}
                 className={styles.form_newArt__area}
@@ -67,6 +76,7 @@ const sendCommentClick = ()=>{
                 rows="5"
                 placeholder="Введите описание"
               />
+             
             </div>
             
             <button
@@ -79,7 +89,10 @@ const sendCommentClick = ()=>{
               Опубликовать
             </button>
           </form>
-
+          
+          {!login && <h3 style={{color:'red'}}> Что бы оставить комментарий нужно войти в приложение</h3>}
+          
+          
           <div className={`${styles.modal__reviews} ${styles.reviews}`}>
 
  {/* COMMENTS */}

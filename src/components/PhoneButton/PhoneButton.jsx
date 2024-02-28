@@ -1,10 +1,32 @@
 import { useState } from 'react'
+import { useSelector } from 'react-redux';
 import styles from '../../pages/Article/article.module.css'
-import { accessToken } from '../../vars/vars';
+
 
 export default function PhoneButton({phone}){
 
+  
+
+  const userAssessTokenRedux = useSelector(
+    (state) => state.authRedux.access_token,
+  )
+
     const [displayNumber, setDisplayNumber]=useState(false)
+    const [needToLogin, setNeedToLogin] = useState(false)
+    // const [commentsOpen, setCommentsOpen]= useState(false)
+    const token = localStorage.getItem('user_token')
+
+    const userCheckPhoneOpen =()=>{
+      displayNumber?setDisplayNumber(false):setDisplayNumber(true)
+      setNeedToLogin(false)
+      console.log(Boolean(token))
+      
+     }
+     const userCheckPhoneClose =()=>{
+      setDisplayNumber(false)
+      setNeedToLogin(true)
+      
+     }
 
     let numberPart;
         
@@ -13,15 +35,22 @@ export default function PhoneButton({phone}){
     }else{
         numberPart=String(phone).slice(0,3)   
     }
-    
-    return(
+    // ||token?userCheckCommentsOpen():setNeedToLogin(true)}
+    return(<>
         <button
-        onClick={()=>{accessToken && !displayNumber?setDisplayNumber(true):setDisplayNumber(false)}}
+        onClick={()=>{userAssessTokenRedux || Boolean(token)? userCheckPhoneOpen():userCheckPhoneClose()}}
         type="button"
         className={`${styles.article__btn} ${styles.btn_hov02}`}
       > {!displayNumber?'Показать телефон':'' }
         {displayNumber && <span >8{phone}</span> }<br />
         {!displayNumber && <span>8&nbsp;{numberPart}&nbsp;ХХХ&nbsp;ХХ&nbsp;ХХ</span>}
       </button>
+       { needToLogin && 
+        <h1 style={{
+          marginTop:'5px',
+          fontSize:'16px',
+          color:'red'}}
+        >Войдите в приложение </h1>}
+        </>
     )
 }

@@ -1,4 +1,7 @@
 import { useDispatch } from 'react-redux'
+
+
+
 import { Link } from 'react-router-dom'
 import styles from'./addCard.module.css'
 import { localHost } from '../../vars/vars'
@@ -7,7 +10,13 @@ import dataFormat from '../../functions/dataformat'
 import { setCurrentAdd } from '../../store/reducers/sliceAdds'
 
 
-export default function AddCard ({add}){  
+
+export default function AddCard ({add}){ 
+    
+   
+
+
+
 const fullDate =  dataFormat(add.created_on)
 const dispatch=useDispatch()
 
@@ -28,6 +37,11 @@ return(
                                         <p className={styles.card__date}>{fullDate}</p>
                                     </div>
                                 </div>
+
+
+
+                                
+
                             </div>
 
 )}

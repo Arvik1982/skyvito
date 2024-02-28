@@ -48,7 +48,7 @@ export default function Header({ noDisplay, page,postId }) {
       className={styles.header}
     >
       <nav className={styles.header__nav}>
-        <button
+        {isLogin &&<button
           type="button"
           onClick={(e) => {
            createPostClick(e)
@@ -57,7 +57,7 @@ export default function Header({ noDisplay, page,postId }) {
           className={`${styles.header__btn_putAd} ${noDisplay ? styles.el_display : ''}`}
         >
           Разместить объявление
-        </button>
+        </button>}
 
         {isLogin && (
           <button
