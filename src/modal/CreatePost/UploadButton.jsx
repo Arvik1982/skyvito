@@ -3,21 +3,31 @@ import { useNavigate } from 'react-router-dom';
 import styles from'./createpost.module.css'
 import uploadButtonClick from './uploadButtonClick';
 import saveUploadButtonClick from './saveCangesButtonClick';
+import del from '../ImgUpload/delNotSentImg';
 
 export default function UploadButton(
   {
+  imgNumberDel,
   file,
   title,
   description,
   price,
   imgUploadForms,
   editMode, 
-  postId
+  postId,
+  articleId,
+  setSrc,
+  setImgUploadForms,
+  setStartDel,
+  imgDeleteForms
+  
   }
   ){
 
   const userAssessTokenRedux = useSelector((state) => state.authRedux.access_token);
   const userRefreshTokenRedux = useSelector((state) => state.authRedux.access_refresh);
+
+  const currentAdd = JSON.parse(localStorage.getItem('currentAdd'))
 
   const navigate =useNavigate()
   const dispatch=useDispatch()
@@ -42,7 +52,8 @@ export default function UploadButton(
             file,
             imgUploadForms,
             userAssessTokenRedux, 
-            userRefreshTokenRedux)
+            userRefreshTokenRedux,
+            articleId)
           
          }}
           type="button"
@@ -66,7 +77,20 @@ export default function UploadButton(
         <button
         disabled={newPostReady?false:true}
         onClick={(e)=>{ 
-
+         
+          del(
+                imgNumberDel,
+                setStartDel,
+                userAssessTokenRedux,
+                userRefreshTokenRedux,
+                dispatch,
+                currentAdd,
+                setSrc,
+                imgUploadForms,
+                setImgUploadForms,
+                imgDeleteForms
+                
+          )
           saveUploadButtonClick(e, 
             dispatch,
             navigate,
@@ -77,7 +101,8 @@ export default function UploadButton(
             imgUploadForms,
             postId,
             userAssessTokenRedux,
-            userRefreshTokenRedux)
+            userRefreshTokenRedux
+            )
         
          }}
           type="button"

@@ -15,14 +15,14 @@ export default  function uploadImgTxt(
    ){
  
   const data1 = new FormData()
+ console.log(imgUploadForms) 
 
-imgUploadForms[0].img? data1.append('files', imgUploadForms[0].img):''
-imgUploadForms[1].img? data1.append('files', imgUploadForms[1].img):''
-imgUploadForms[2].img? data1.append('files', imgUploadForms[2].img):''
-imgUploadForms[3].img? data1.append('files', imgUploadForms[3].img):''
-imgUploadForms[4].img? data1.append('files', imgUploadForms[4].img):''
-
- function sendImg(data){
+for (let i=0;i<5; i+=1){
+    if(!imgUploadForms[i].deleted){
+     imgUploadForms[i].img? data1.append('files', imgUploadForms[i].img):''
+}
+}
+ function sendImgTxt(data){
   return fetch (`${localHost}ads?title=${title}&description=${description}&price=${price}`, {
   
     method: 'POST',
@@ -39,14 +39,12 @@ imgUploadForms[4].img? data1.append('files', imgUploadForms[4].img):''
   })
  }
 
-if(!imgUploadForms[0].deleted){
-  
-imgUploadForms[0].img?sendImg(data1).catch((er)=>{console.log(er.message)}):''
-imgUploadForms[1].img?sendImg(data1).catch((er)=>{console.log(er.message)}):''
-imgUploadForms[2].img?sendImg(data1).catch((er)=>{console.log(er.message)}):''
-imgUploadForms[3].img?sendImg(data1).catch((er)=>{console.log(er.message)}):''
-imgUploadForms[4].img?sendImg(data1).catch((er)=>{console.log(er.message)}):''
-}
+
+
+
+sendImgTxt(data1).catch((er)=>{console.log(er.message)})
+
+
 
 getUserAddsByToken(dispatch)
 

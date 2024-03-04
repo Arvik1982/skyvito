@@ -1,18 +1,9 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useEffect, useRef, useState } from 'react'
 import styles from '../CreatePost/createpost.module.css'
 import { localHost } from '../../vars/vars'
-// import deleteImg from '../CreatePost/delImage'
-import {
-  getCurrentAdd,
-  //  refreshTokens
-} from '../../api'
-// import { setTokenAccess, setTokenRefresh } from '../../store/reducers/sliceReg'
-import {
-  setCurrentAdd,
-  // setImgDeleted
-} from '../../store/reducers/sliceAdds'
-import del from './delNotSentImg'
+import { getCurrentAdd } from '../../api'
+import { setCurrentAdd } from '../../store/reducers/sliceAdds'
 
 export default function ImgUploadForm({
   setFile,
@@ -22,20 +13,24 @@ export default function ImgUploadForm({
   imgUploadForms,
   setImgUploadForms,
   setImgNumber,
+  setImgNumberDel,
   editMode,
   currentAdd,
   postId,
+  startDel,
+  setImgDeleteForms,
+  imgDeleteForms,
 }) {
   const realUpload = useRef(null)
-  const realImg = useRef(null)
   const dispatch = useDispatch()
-  const userAssessTokenRedux = useSelector(
-    (state) => state.authRedux.access_token,
-  )
-  const userRefreshTokenRedux = useSelector(
-    (state) => state.authRedux.access_refresh,
-  )
-  const [startDel, setStartDel] = useState(false)
+
+  // const uploadImgSrc =
+  // src ? imgUploadForms[id]?.src:
+  // imgDeleteForms[id].src?imgDeleteForms[id].src:
+  // currentAdd?.images[id]?localHost+currentAdd.images[id].url:
+  // null
+
+  const [deleteDisplay] = useState(imgDeleteForms[id].deleted ? false : true)
 
   useEffect(() => {
     postId
@@ -94,35 +89,41 @@ export default function ImgUploadForm({
       {/* EDIT MODE */}
 
       {editMode && (
+        // DELETE
         <div
           key={Math.round(Math.random() * 1000)}
           className={styles.form_newArt__img}
         >
-          <div
-            onClick={() => {
-              setImgNumber(id)
-              del(
-                id,
-                setStartDel,
-                userAssessTokenRedux,
-                userRefreshTokenRedux,
-                dispatch,
-                currentAdd,
-                setSrc,
-                imgUploadForms,
-                setImgUploadForms,
-                realUpload,
-              )
-            }}
-            className={
-              src || currentAdd.images[id]
-                ? styles.delete__img_text
-                : styles.display
-            }
-          >
-            {' '}
-            X{' '}
-          </div>
+          {deleteDisplay && (
+            <div
+              onClick={(e) => {
+                e.stopPropagation()
+
+                setImgNumber(id)
+                setImgNumberDel(id)
+                imgDeleteForms.forEach((el) => {
+                  el.id === id ? (el.deleted = true) : ''
+                  el.id === id ? (el.src = currentAdd.images[id]?.url) : ''
+                })
+                imgUploadForms.forEach((el) => {
+                  el.id === id ? (el.deleted = true) : ''
+                  el.id === id ? (el.src = currentAdd.images[id]?.url) : ''
+                })
+                setImgDeleteForms(imgDeleteForms)
+                setImgUploadForms(imgUploadForms)
+
+                setSrc(imgDeleteForms[id].src)
+              }}
+              className={
+                src || currentAdd.images[id]
+                  ? styles.delete__img_text
+                  : styles.display
+              }
+            >
+              {' '}
+              X{' '}
+            </div>
+          )}
 
           <input
             key={Math.round(Math.random() * 100)}
@@ -140,24 +141,44 @@ export default function ImgUploadForm({
             }}
           />
 
+          {/* {ОТМЕНА УДАЛЕНИЯ} */}
+          {!deleteDisplay && (
+            <div
+              onClick={() => {
+                setImgNumber(id)
+                setImgNumberDel(id)
+                imgDeleteForms.forEach((el) => {
+                  el.id === id ? (el.deleted = false) : ''
+                  el.id === id ? (el.src = currentAdd.images[id]?.url) : ''
+                })
+                imgUploadForms.forEach((el) => {
+                  el.id === id ? (el.deleted = false) : ''
+                  el.id === id ? (el.src = currentAdd.images[id]?.url) : ''
+                })
+                setImgDeleteForms(imgDeleteForms)
+                setImgUploadForms(imgUploadForms)
+              }}
+              style={{ width: '100%', height: '100%' }}
+            >
+              deleted
+            </div>
+          )}
           <img
-            ref={realImg}
+            className="img_upload_el"
             onClick={() => {
-              src || currentAdd.images[id]
-                ? del(
-                    id,
-                    setStartDel,
-                    userAssessTokenRedux,
-                    userRefreshTokenRedux,
-                    dispatch,
-                    currentAdd,
-                    setSrc,
-                    imgUploadForms,
-                    setImgUploadForms,
-                    realUpload,
-                  )
-                : realUpload.current.click()
+              src || currentAdd.images[id] ? '' : realUpload.current.click()
               setImgNumber(id)
+              imgUploadForms.forEach((el) => {
+                el.id === id ? (el.deleted = false) : ''
+                el.id === id ? (el.src = currentAdd.images[id]?.url) : '2_2'
+              })
+              setImgUploadForms(imgUploadForms)
+
+              imgDeleteForms.forEach((el) => {
+                el.id === id ? (el.deleted = false) : ''
+                el.id === id ? (el.src = currentAdd.images[id]?.url) : '1'
+              })
+              setImgDeleteForms(imgDeleteForms)
             }}
             style={
               src || currentAdd.images[id]
@@ -166,10 +187,12 @@ export default function ImgUploadForm({
             }
             src={
               src
-                ? imgUploadForms[id].src
-                : currentAdd.images[id]
-                  ? localHost + currentAdd.images[id].url
-                  : null
+                ? imgUploadForms[id]?.src
+                : imgDeleteForms[id].src
+                  ? imgDeleteForms[id].src
+                  : currentAdd?.images[id]
+                    ? localHost + currentAdd.images[id].url
+                    : null
             }
             alt=""
           />

@@ -10,7 +10,7 @@ import logout from '../../functions/logOut'
 import { setError } from '../../store/reducers/sliceError'
 
 
-export default function Header({ noDisplay, page,postId }) {
+export default function Header({ noDisplay, page, postId , articleId}) {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const editMode=useSelector((state) => state.addsRedux.editMode)
@@ -86,7 +86,7 @@ export default function Header({ noDisplay, page,postId }) {
           </button>
         )}
       </nav>
-      {createAddStatus && <CreatePost postId={postId} editMode={editMode} />}
+      {createAddStatus && <CreatePost postId={postId} editMode={editMode} articleId={articleId} />}
     </header>
   )
 }

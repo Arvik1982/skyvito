@@ -17,13 +17,15 @@ const currentAdd= JSON.parse(localStorage.getItem('currentAdd'))
 const token = localStorage.getItem('user_token')
 
 
+const existComment=!commentText||commentText.trim().length===0?true:false
+
 useEffect(()=>{
   userAssessTokenRedux || token ? setLogin(true):setLogin(false)
 },[])
 
 const sendCommentClick = ()=>{
 
-  !commentText?'':
+  !commentText||commentText.trim().length===0?'':
   refreshTokens(userAssessTokenRedux,userRefreshTokenRedux)
   .then((tokens)=>{
   createComment(tokens.access_token, commentText)
@@ -62,7 +64,11 @@ const sendCommentClick = ()=>{
             <div className={styles.form_newArt__block}>
             <label >Добавить отзыв</label>
               
-              {!commentText&&<label style={{color:'red'}} >
+              {
+              
+              // !commentText
+              
+              existComment&&<label style={{color:'red'}} >
                 Заполните поле с отзывом</label>}
               <textarea
               
@@ -83,7 +89,7 @@ const sendCommentClick = ()=>{
             disabled={commentText?false:true}
             onClick={ sendCommentClick }
               type='button'
-              className={`${styles.form_newArt__btn_pub} ${styles.btn_hov02}`}
+              className={!commentText||commentText.trim().length===0?`${styles.form_newArt__btn_pub} `:`${styles.form_newArt__btn_ready} ${styles.btn_hov02}`}
               id="btnPublish"
             >
               Опубликовать

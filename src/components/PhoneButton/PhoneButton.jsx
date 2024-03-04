@@ -15,11 +15,12 @@ export default function PhoneButton({phone}){
     const [needToLogin, setNeedToLogin] = useState(false)
     // const [commentsOpen, setCommentsOpen]= useState(false)
     const token = localStorage.getItem('user_token')
+    const [defaultNumber] = useState('NNN-NN-NN')
 
     const userCheckPhoneOpen =()=>{
       displayNumber?setDisplayNumber(false):setDisplayNumber(true)
       setNeedToLogin(false)
-      console.log(Boolean(token))
+      
       
      }
      const userCheckPhoneClose =()=>{
@@ -42,7 +43,7 @@ export default function PhoneButton({phone}){
         type="button"
         className={`${styles.article__btn} ${styles.btn_hov02}`}
       > {!displayNumber?'Показать телефон':'' }
-        {displayNumber && <span >8{phone}</span> }<br />
+        {displayNumber && <span >8-{phone?phone:defaultNumber}</span> }<br />
         {!displayNumber && <span>8&nbsp;{numberPart}&nbsp;ХХХ&nbsp;ХХ&nbsp;ХХ</span>}
       </button>
        { needToLogin && 

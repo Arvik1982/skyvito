@@ -27,14 +27,14 @@ export default function AppRoutes(){
     return(
         <Routes>
             <Route path="/" element={<Main/>}/>
-            <Route path="/article" element={<Article/>}/>
+            <Route path="/article/:id" element={<Article/>}/>
             {/* <Route path="/myarticle" element={<MyArticle/>}/> */}
             
             <Route path="*" element={<ErrorPage/>}/>
             <Route path="/login" element={<AuthorizationPage/>}/>
         <Route element ={<ProtectedRoute isAllowed={isLogin} />}>
             <Route path="/profile" element={<Profile/>}/>
-            <Route path="/seller" element={<SellerProfile/>}/>
+            <Route path="/seller/:id" element={<SellerProfile/>}/>
         </Route>
         </Routes>
     )

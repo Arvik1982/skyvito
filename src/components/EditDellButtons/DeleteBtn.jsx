@@ -22,6 +22,7 @@ export default function DeleteButton({postId}){
     return(
 
         <button
+        disabled={processOn?true:false}
         onClick={()=>{
           refreshTokens(userAssessTokenRedux, userRefreshTokenRedux)
           .then((tokens)=>{setProcessOn(true);

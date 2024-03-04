@@ -15,11 +15,36 @@ const sliceAdds = createSlice({
         searchButtonClick:false,
         imageRef:'',
         imageRefId:'',
-        imgDeleted:false
+        imgDeleted:false,
+        dataChanged:false,
+        newAddId:'',
+        noMainImg:false
        
         
     },
     reducers:{
+
+      setNewAddId(state,action){
+         
+         state.newAddId=action.payload
+         
+         
+     },
+
+      setDataChanged(state,action){
+         
+         state.dataChanged=action.payload
+         
+         
+     },
+
+     
+     setNoMainImg(state,action){
+         
+      state.noMainImg=action.payload
+      
+      
+  },
 
       setImgDeleted(state,action){
          
@@ -57,12 +82,13 @@ const sliceAdds = createSlice({
         setAdds(state,action){
          
            state.adds=action.payload
+         
            localStorage.setItem('allAdds',JSON.stringify(action.payload))  
         },
         setCurrentAdd(state,action){
             state.currentAdd=action.payload
             localStorage.setItem('currentAdd',JSON.stringify(action.payload))
-  
+            
          },
 
          setCurrentUserAdds(state,action){
@@ -78,25 +104,29 @@ const sliceAdds = createSlice({
             searchBaseArr.filter((el)=>{
                 
                 return (
-                String(el.title).split(' ').join('').toLowerCase()
-                .includes(searchStr.split(' ').join('').toLowerCase())
-
-                ||String(searchStr).split(' ').join('').toLowerCase()
-                .includes(el.title.split(' ').join('').toLowerCase())
-
-                ||String(el.title).split(' ').join('').toLowerCase()
-                .includes(searchStr.split(' ').reverse().join(' ').toLowerCase())
-
-                ||String(searchStr).split(' ').reverse().join('').toLowerCase()
-                .includes(el.title.split(' ').join('').toLowerCase())
-
-                || String(el.title).split(' ').reverse().join('').includes(searchStr.split(' ').join('').toLowerCase())
-
-                ||String(el.title).split(' ').join('').toLowerCase()
+                  String(el.title).toLowerCase()
                 .includes(searchStr.toLowerCase())
 
-                ||String(searchStr).toLowerCase()
-                .includes(String(el.title).split(' ').join('').toLowerCase())
+
+               //  String(el.title).split(' ').join('').toLowerCase()
+               //  .includes(searchStr.split(' ').join('').toLowerCase())
+
+               //  ||String(searchStr).split(' ').join('').toLowerCase()
+               //  .includes(el.title.split(' ').join('').toLowerCase())
+
+               //  ||String(el.title).split(' ').join('').toLowerCase()
+               //  .includes(searchStr.split(' ').reverse().join(' ').toLowerCase())
+
+               //  ||String(searchStr).split(' ').reverse().join('').toLowerCase()
+               //  .includes(el.title.split(' ').join('').toLowerCase())
+
+               //  || String(el.title).split(' ').reverse().join('').includes(searchStr.split(' ').join('').toLowerCase())
+
+               //  ||String(el.title).split(' ').join('').toLowerCase()
+               //  .includes(searchStr.toLowerCase())
+
+               //  ||String(searchStr).toLowerCase()
+               //  .includes(String(el.title).split(' ').join('').toLowerCase())
                 )         
         
             })
@@ -135,6 +165,9 @@ export const{setAdds,
     setSearchButtonClick,
     setImageRef,
     setImageRefId,
-    setImgDeleted
+    setImgDeleted,
+    setDataChanged,
+    setNewAddId,
+    setNoMainImg
 }=sliceAdds.actions;
 export default sliceAdds.reducer

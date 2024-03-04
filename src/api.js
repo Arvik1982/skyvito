@@ -196,7 +196,7 @@ export async function refreshTokens(userAssessTokenRedux, userRefreshTokenRedux)
 
 
 export async function getCurrentUserAdds(accessTokenNew) {
-  console.log('getCurrentUserAdds START')  
+  
 
   try{
   const currentUserAddsResp = await fetch('http://127.0.0.1:8090/ads/me', {
@@ -214,7 +214,7 @@ export async function getCurrentUserAdds(accessTokenNew) {
 
   }
   const userAdds = await currentUserAddsResp.json()
-  console.log('getCurrentUserAdds OK')
+  
   return userAdds
 }
 catch(error){

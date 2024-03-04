@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
+// import { useParams } from 'react-router-dom'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import ToMainButton from '../../components/ToMainButton/ToMainButton'
@@ -10,7 +11,11 @@ import LogoSky from '../../components/Logo/Logo'
 
 
 
+
 export default function SellerProfile() {
+
+  // const sellerId = useParams().id
+  
 
    const currentAddLocal = JSON.parse(localStorage.getItem('currentAdd'))
    const allAddsLocal = JSON.parse(localStorage.getItem('allAdds'))

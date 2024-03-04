@@ -82,7 +82,7 @@ const navigate=useNavigate()
               </div>
 
               <h2 className={styles.main__h2}>
-                Здравствуйте,{userData.name ? userData.name : 'Имя'}!
+                Здравствуйте,{userData.name ? userData.name : userData.email}!
               </h2>
 
               <div className={`${styles.main__profile} ${styles.profile}`}>

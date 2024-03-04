@@ -26,6 +26,7 @@ export default function Register(){
   const navigate = useNavigate()
 
   useEffect(()=>{
+    
     dispatch(setError(''))
   },[])
   
@@ -67,7 +68,10 @@ placeholder="Город (необязательно)"/>
 {error&&<div style={{color:'red', position:'absolute', bottom:'17%', marginBottom:'8px'}}>{error}</div>}
 <button 
 onClick={()=>{
-    
+
+    if(!userMail){''}
+    else{
+  
     userPassword!==userPassword2?
     dispatch(setError('Пароли не совпадают')):
     registration(
@@ -98,6 +102,7 @@ onClick={()=>{
     return data    
     }).catch((errorData)=>{
         dispatch(setError(errorData.message))})
+    }
    
 
 }

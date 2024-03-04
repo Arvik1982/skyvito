@@ -14,11 +14,11 @@ export default function del(
     currentAdd,
     setSrc,
     imgUploadForms,
-    setImgUploadForms  
+    setImgUploadForms,
+    imgDeleteForms  
 
     
     ) {
-    console.log('DELETiNG IMG...')
    
     setStartDel(true)
     refreshTokens(userAssessTokenRedux, userRefreshTokenRedux).then(
@@ -29,8 +29,13 @@ export default function del(
           currentAdd.id,
           currentAdd.images[id]?.url,
           tokens.access_token,
+          imgDeleteForms,
+          imgUploadForms,
+          dispatch
         )
           .then((data) => {
+
+           
             if (data === 'No content') {
               
               setSrc('')
@@ -44,7 +49,7 @@ export default function del(
             }
             dispatch(setImgDeleted(true))
             setStartDel(false)
-            console.log('DELETED IMG')
+            
           })
           .catch((err) => {
             setStartDel(false)

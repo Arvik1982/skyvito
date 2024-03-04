@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link,useParams } from 'react-router-dom'
 import { localHost } from '../../vars/vars'
 import styles from './article.module.css'
 import logo from '../../img/logo.png'
@@ -21,13 +21,18 @@ import DeleteButton from '../../components/EditDellButtons/DeleteBtn'
 import { setUserData } from '../../store/reducers/sliceReg'
 import Comments from '../../modal/Comments/Comments'
 import LogoSky from '../../components/Logo/Logo'
-import { setAdds } from '../../store/reducers/sliceAdds'
+import { setAdds, setDataChanged, setNoMainImg } from '../../store/reducers/sliceAdds'
+
+
 
 export default function Article() {
-  const dispatch = useDispatch()
 
+  const dispatch = useDispatch()
   const currentAddLocal = JSON.parse(localStorage.getItem('currentAdd')) // actual
   const userId = Number(localStorage.getItem('userUID')) // user before actual
+  
+  const articleId = useParams().id
+  
 
   const userAssessTokenRedux = useSelector(
     (state) => state.authRedux.access_token,
@@ -36,11 +41,20 @@ export default function Article() {
     (state) => state.authRedux.access_refresh,
   )
   const deleted = useSelector((state) => state.addsRedux.imgDeleted)
+  const dataChanged = useSelector((state) => state.addsRedux.dataChanged)
 
-  const [currentAdd] = useState(currentAddLocal)
+  
+
+  const currentAdd =currentAddLocal 
+  
+  
+
   const [displayButtons, setDisplayButtons] = useState(false)
   const [comments, setComments] = useState([])
   const [commentsOpen, setCommentsOpen] = useState(false)
+
+  const noMainImg = useSelector((state) => state.addsRedux.noMainImg)
+ 
 
   const [mainImg, setMainImg] = useState(
     currentAdd.images[0]?.url
@@ -51,14 +65,30 @@ export default function Article() {
   const currentAddUserId = currentAdd.user.id
   const postId = currentAdd.id
   const token = localStorage.getItem('user_token')
+ 
+  
 
   useEffect(() => {
-    getAllAds().then((data) => {
+    
+    noMainImg&&currentAdd.images.length!==0?setMainImg(`${logo}`):
+    setMainImg(
+      currentAdd.images.length!==0?
+      
+      `${localHost}${currentAdd.images[0].url}`:
+      currentAdd.images[1]?.url?`${localHost}${currentAdd.images[1]?.url}`:
+      `${logo}`
+    )
+
+      getAllAds().then((data) => {
       dispatch(setAdds(data))
+      dispatch(setNoMainImg(false))
     })
-  }, [])
+   
+  }, [dataChanged])
 
   useEffect(() => {
+
+        
     !userId || !currentAddUserId ? setDisplayButtons(true) : ''
     if (userAssessTokenRedux || token) {
       refreshTokens(userAssessTokenRedux, userRefreshTokenRedux)
@@ -82,6 +112,7 @@ export default function Article() {
         let dataArray = []
         dataArray = data
         setComments(dataArray)
+        dispatch(setDataChanged(dataChanged?false:true))
       })
       .catch((err) => {
         console.log(err)
@@ -91,7 +122,7 @@ export default function Article() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
-        <Header postId={postId} noDisplay={false} />
+        <Header postId={postId} noDisplay={false} articleId={articleId} />
 
         <main className={styles.main}>
           <div className={styles.main__container}>
@@ -108,10 +139,24 @@ export default function Article() {
               <div className={styles.article__left}>
                 <div className={styles.article__fill_img}>
                   <div className={styles.article__img}>
-                    <img src={mainImg} alt="element" />
+                    <img
+                    key={dataChanged}
+                     src={mainImg} alt="element" />
                   </div>
-                  <div className={styles.article__img_bar}>
-                    {currentAdd.images.map((el) => {
+                  <div
+
+                  
+                  
+                  className={styles.article__img_bar}>
+
+
+                    {
+                    
+                    
+                    currentAdd.images
+                   
+                   .map((el) => {
+                    
                       return (
                         <div
                           onClick={() =>
@@ -125,7 +170,7 @@ export default function Article() {
                           <img
                             className={`${styles.img__line}`}
                             key={Math.round(Math.random() * 100000000)}
-                            src={el?.url ? `${localHost}${el?.url}` : `${logo}`}
+                            src={el.url ? `${localHost}${el?.url}` : `${logo}`}
                             alt="element"
                           />
                         </div>
@@ -136,7 +181,11 @@ export default function Article() {
                     key={Math.round(Math.random() * 10000000)}
                     className={`${styles.article__img_bar_mob}`}
                   >
-                    {currentAdd.images.map((el) => {
+                    {
+                    
+               
+                 currentAdd.images                    
+                    .map((el) => {
                       return (
                         <div
                           key={Math.round(Math.random() * 10000000)}
@@ -204,7 +253,7 @@ export default function Article() {
                           <Skeleton className={styles.skelet_edit} />
                         </SkeletonTheme>
                       ) : (
-                        <EditButton />
+                        <EditButton   />
                       )}
 
                       {!displayButtons ? (
@@ -226,7 +275,7 @@ export default function Article() {
 
                   <div className={`${styles.article__author} ${styles.author}`}>
                     <div className={styles.author__img}>
-                      <Link to="/seller">
+                      <Link to={`/seller/${currentAdd.user.id}`}>
                         <img
                           className={styles.seller__avatar}
                           src={
@@ -239,7 +288,7 @@ export default function Article() {
                       </Link>
                     </div>
                     <div className={styles.author__cont}>
-                      <Link to="/seller">
+                      <Link to={`/seller/${currentAdd.user.id}`}>
                         <p className={styles.author__name}>
                           {currentAdd.user.name}
                         </p>

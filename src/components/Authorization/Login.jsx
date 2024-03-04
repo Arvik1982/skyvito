@@ -5,7 +5,7 @@ import styles from'./authorization.module.css'
 import logoModal from '../../img/logo_modal.png'
 import InputMail from './inputMail'
 import InputPass from './inputPass'
-import { setEnterMode, setTokenAccess, setUserData, setTokenRefresh} from '../../store/reducers/sliceReg'
+import { setEnterMode, setTokenAccess, setUserData, setTokenRefresh, setUserMail} from '../../store/reducers/sliceReg'
 import { getUserByToken, getTokens } from '../../api'
 import { setError } from '../../store/reducers/sliceError'
 
@@ -33,6 +33,7 @@ return(
                 {error&&<div style={{color:'red', position:'absolute', bottom:'45%', marginTop:'8px', marginBottom:'5px'}}>{error}</div>}
                 <button 
                 onClick={()=>{
+                    loginName&&password?
                     
                     getTokens(loginName, password)
                     
@@ -48,7 +49,7 @@ return(
                             navigate('/profile')})
                         .catch((newError)=>{dispatch(setError(newError.message))})
 
-                    }).catch((newError)=>{dispatch(setError(newError.message))})
+                    }).catch((newError)=>{dispatch(setError(newError.message))}):dispatch(setError('Заполните Логин/Пароль'))
             }}
                 type='button' 
                 className={styles.modal__btn_enter} 
@@ -57,6 +58,7 @@ return(
              
                 <button
                 onClick={()=>{
+                    dispatch(setUserMail(''));
                     dispatch(setError(''));
                     dispatch(setEnterMode('registration'));
                     navigate('/login')
