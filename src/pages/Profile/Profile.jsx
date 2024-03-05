@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect, useState,  } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
@@ -14,56 +14,62 @@ import SaveUserData from '../../components/SaveUserData/SaveUserData'
 import { setUserTmpPhone } from '../../store/reducers/sliceReg'
 import LogoSky from '../../components/Logo/Logo'
 
-
 export default function Profile() {
-
-const navigate=useNavigate()  
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const error = useSelector((state) => state.errorRedux.error)
-  const userDataRedux = useSelector((state) => state.authRedux.userData);
-  const userAssessTokenRedux = useSelector((state) => state.authRedux.access_token);
-  const userRefreshTokenRedux = useSelector((state) => state.authRedux.access_refresh);
-  const newPostLoadsSuccess = useSelector((state) => state.addsRedux.newPostLoadSuccess) 
+  const userDataRedux = useSelector((state) => state.authRedux.userData)
+  const userAssessTokenRedux = useSelector(
+    (state) => state.authRedux.access_token,
+  )
+  const userRefreshTokenRedux = useSelector(
+    (state) => state.authRedux.access_refresh,
+  )
+  const newPostLoadsSuccess = useSelector(
+    (state) => state.addsRedux.newPostLoadSuccess,
+  )
   const userData = checkLoginStatus(userDataRedux)
-  const currentUserAdds = useSelector((state) => state.addsRedux.currentUserAdds)
-  const [userPhone, setUserPhone] = useState(userData.phone ? userData.phone : '')
- 
+  const currentUserAdds = useSelector(
+    (state) => state.addsRedux.currentUserAdds,
+  )
+  const [userPhone, setUserPhone] = useState(
+    userData.phone ? userData.phone : '',
+  )
+
   const inputForms = [
-    { id:1,
+    {
+      id: 1,
       name: 'name',
       value: userData.name,
       placeholder: 'Введите имя',
-      labelName:'Имя'
+      labelName: 'Имя',
     },
-    { id:2,
+    {
+      id: 2,
       name: 'surname',
       value: userData.surname,
       placeholder: 'Введите фамилию',
-      labelName:'Фамилия'
+      labelName: 'Фамилия',
     },
-    { id:3,
+    {
+      id: 3,
       name: 'city',
       value: userData.city,
       placeholder: 'Введите город',
-      labelName:'Город'
+      labelName: 'Город',
     },
   ]
 
-  
   useEffect(() => {
     dispatch(setUserTmpPhone(userPhone))
   }, [userPhone])
 
   useEffect(() => {
-    
-
-       getUserAddsByToken(dispatch, userAssessTokenRedux, userRefreshTokenRedux)
-    if(userData.name==='No_User'){navigate('/login')}
-  }, [
-    newPostLoadsSuccess
-  ])
-
- 
+    getUserAddsByToken(dispatch, userAssessTokenRedux, userRefreshTokenRedux)
+    if (userData.name === 'No_User') {
+      navigate('/login')
+    }
+  }, [newPostLoadsSuccess])
 
   return (
     <div className={styles.wrapper}>
@@ -73,8 +79,7 @@ const navigate=useNavigate()
           <div className={styles.main__container}>
             <div className={styles.main__center_block}>
               <div className={`${styles.main__menu} ${styles.menu}`}>
-
-              <LogoSky/>
+                <LogoSky />
 
                 <form className={styles.menu__form} action="#">
                   <ToMainButton />
@@ -122,7 +127,11 @@ const navigate=useNavigate()
                             value={userPhone}
                             placeholder="Введите телефон: +79161234567"
                           />
-                          {error && (<h2 style={{ color: 'red', marginTop:'10px' }}>{error}</h2>)}
+                          {error && (
+                            <h2 style={{ color: 'red', marginTop: '10px' }}>
+                              {error}
+                            </h2>
+                          )}
                         </div>
                         <SaveUserData />
                       </form>
@@ -134,8 +143,6 @@ const navigate=useNavigate()
                 Мои товары
               </h3>
             </div>
-
-            
 
             <div className={styles.main__content}>
               <div className={`${styles.content__cards} ${styles.cards}`}>

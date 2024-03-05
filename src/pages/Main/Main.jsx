@@ -57,7 +57,7 @@ export default function Main() {
             <Search />
             <div className={styles.main__container}>
               <h2 className={styles.main__h2}>Объявления</h2>
-              {!loading && allAds.length === 0 && !searchClick &&(
+              {!loading && allAds.length === 0 && !searchClick && (
                 <h2> По запросу ничего не найдено</h2>
               )}
               {!loading && allAds.length === 0 && searchClick && (

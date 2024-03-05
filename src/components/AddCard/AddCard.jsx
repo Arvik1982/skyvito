@@ -20,7 +20,6 @@ export default function AddCard({ add }) {
               dispatch(setCurrentAdd(add))
             }}
             to={`/article/${add.id}`}
-          
           >
             <img
               src={

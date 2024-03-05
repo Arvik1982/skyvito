@@ -23,13 +23,6 @@ export default function ImgUploadForm({
 }) {
   const realUpload = useRef(null)
   const dispatch = useDispatch()
-
-  // const uploadImgSrc =
-  // src ? imgUploadForms[id]?.src:
-  // imgDeleteForms[id].src?imgDeleteForms[id].src:
-  // currentAdd?.images[id]?localHost+currentAdd.images[id].url:
-  // null
-
   const [deleteDisplay] = useState(imgDeleteForms[id].deleted ? false : true)
 
   useEffect(() => {
