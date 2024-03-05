@@ -1,124 +1,199 @@
 import { useEffect, useState } from 'react'
-import { useDispatch, 
-  // useSelector
- } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { localHost,
-  // accessToken
-} from '../../vars/vars'
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link,useParams } from 'react-router-dom'
+import { localHost } from '../../vars/vars'
 import styles from './article.module.css'
 import logo from '../../img/logo.png'
 import Header from '../../components/Header/Header'
 import dataFormat from '../../functions/dataformat'
-import { getCurrentComment, getUserByToken, refreshTokens } from '../../api'
-import Footer from'../../components/Footer/Footer'
+import {
+  getAllAds,
+  getCurrentComment,
+  getUserByToken,
+  refreshTokens,
+} from '../../api'
+import Footer from '../../components/Footer/Footer'
 import ToMainButton from '../../components/ToMainButton/ToMainButton'
 import PhoneButton from '../../components/PhoneButton/PhoneButton'
 import EditButton from '../../components/EditDellButtons/EditBtn'
 import DeleteButton from '../../components/EditDellButtons/DeleteBtn'
 import { setUserData } from '../../store/reducers/sliceReg'
-// import { setCurrentAdd } from '../../store/reducers/sliceAdds'
 import Comments from '../../modal/Comments/Comments'
+import LogoSky from '../../components/Logo/Logo'
+import { setAdds, setDataChanged, setNoMainImg } from '../../store/reducers/sliceAdds'
+
 
 
 export default function Article() {
-  const currentAddLocal = JSON.parse(localStorage.getItem('currentAdd')) // actual
-  const userId =Number( localStorage.getItem('userUID')) // user before actual
-  
-  const [currentAdd] = useState(currentAddLocal)
-  const [displayButtons, setDisplayButtons]=useState(false)
-  const [comments, setComments] = useState([])
-  // const [showButtons, setShowButtons] = useState(false)
+
   const dispatch = useDispatch()
+  const currentAddLocal = JSON.parse(localStorage.getItem('currentAdd')) // actual
+  const userId = Number(localStorage.getItem('userUID')) // user before actual
+  
+  const articleId = useParams().id
+  
 
- const currentAddUserId = currentAdd.user.id
- const postId=currentAdd.id
-const [commentsOpen, setCommentsOpen]= useState(false)
+  const userAssessTokenRedux = useSelector(
+    (state) => state.authRedux.access_token,
+  )
+  const userRefreshTokenRedux = useSelector(
+    (state) => state.authRedux.access_refresh,
+  )
+  const deleted = useSelector((state) => state.addsRedux.imgDeleted)
+  const dataChanged = useSelector((state) => state.addsRedux.dataChanged)
 
-// = useSelector(state=>state.authRedux.userData.id)
+  
 
+  const currentAdd =currentAddLocal 
+  
+  
 
+  const [displayButtons, setDisplayButtons] = useState(false)
+  const [comments, setComments] = useState([])
+  const [commentsOpen, setCommentsOpen] = useState(false)
+
+  const noMainImg = useSelector((state) => state.addsRedux.noMainImg)
+ 
+
+  const [mainImg, setMainImg] = useState(
+    currentAdd.images[0]?.url
+      ? `${localHost}${currentAdd.images[0]?.url} `
+      : `${logo}`,
+  )
+
+  const currentAddUserId = currentAdd.user.id
+  const postId = currentAdd.id
+  const token = localStorage.getItem('user_token')
+ 
+  
 
   useEffect(() => {
-    !userId||!currentAddUserId?setDisplayButtons(true):'';
-    // setShowButtons(true)
-    refreshTokens().catch((err)=>{console.log(err)}).then((tokens)=>{ 
-
-      getUserByToken(tokens.access_token)
-      .then((data)=>{
-        dispatch(setUserData(data));
-        setDisplayButtons(true)})
-      .catch((err)=>{console.log(err)})
-
-    })
-
-    getCurrentComment(currentAdd.id).then((data) => {
+    
+    noMainImg&&currentAdd.images.length!==0?setMainImg(`${logo}`):
+    setMainImg(
+      currentAdd.images.length!==0?
       
-      let dataArray = []
-      dataArray = data
-      setComments(dataArray)
-    }).catch((err)=>{console.log(err)})
-  }, [])
+      `${localHost}${currentAdd.images[0].url}`:
+      currentAdd.images[1]?.url?`${localHost}${currentAdd.images[1]?.url}`:
+      `${logo}`
+    )
+
+      getAllAds().then((data) => {
+      dispatch(setAdds(data))
+      dispatch(setNoMainImg(false))
+    })
    
+  }, [dataChanged])
+
+  useEffect(() => {
+
+        
+    !userId || !currentAddUserId ? setDisplayButtons(true) : ''
+    if (userAssessTokenRedux || token) {
+      refreshTokens(userAssessTokenRedux, userRefreshTokenRedux)
+        .catch((err) => {
+          console.log(err)
+        })
+        .then((tokens) => {
+          getUserByToken(tokens.access_token)
+            .then((data) => {
+              dispatch(setUserData(data))
+              setDisplayButtons(true)
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+        })
+    }
+
+    getCurrentComment(currentAdd.id)
+      .then((data) => {
+        let dataArray = []
+        dataArray = data
+        setComments(dataArray)
+        dispatch(setDataChanged(dataChanged?false:true))
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [deleted])
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
-        <Header postId={postId} noDisplay={false} />
+        <Header postId={postId} noDisplay={false} articleId={articleId} />
 
         <main className={styles.main}>
           <div className={styles.main__container}>
             <div className={`${styles.main__menu} ${styles.menu}`}>
-              <a className={styles.menu__logo_link} href="" target="_blank">
-                <img className={styles.menu__logo_img} src={logo} alt="logo" />
-              </a>
-
+              <LogoSky />
               <form className={styles.menu__form} action="#">
-                <ToMainButton/>
+                <ToMainButton />
               </form>
             </div>
           </div>
 
-          <div   className={`${styles.main__artic} ${styles.artic}`}>
-            <div  className={`${styles.artic__content} ${styles.article}`}>
-              <div  className={styles.article__left}>
-                <div  className={styles.article__fill_img}>
-                  <div  className={styles.article__img}>
-                    
-                    <img 
-                      src={
-                        currentAdd.images[0]?.url
-                          ? `${localHost}${currentAdd.images[0]?.url} `
-                          : `${logo}`
-                      }
-                      alt="element"
-                    />
+          <div className={`${styles.main__artic} ${styles.artic}`}>
+            <div className={`${styles.artic__content} ${styles.article}`}>
+              <div className={styles.article__left}>
+                <div className={styles.article__fill_img}>
+                  <div className={styles.article__img}>
+                    <img
+                    key={dataChanged}
+                     src={mainImg} alt="element" />
                   </div>
-                  <div 
+                  <div
+
                   
-                   className={styles.article__img_bar}>
-                    {currentAdd.images.map((el) => {
+                  
+                  className={styles.article__img_bar}>
+
+
+                    {
+                    
+                    
+                    currentAdd.images
+                   
+                   .map((el) => {
+                    
                       return (
-                        <div key={Math.round(Math.random()*100000)}   
-                        className={styles.article__img_bar_div}>
-                         
-                          <img className={styles.img__line}
-                           key={Math.round(Math.random()*10000)}
-                            src={el?.url ? `${localHost}${el?.url}` : `${logo}`}
+                        <div
+                          onClick={() =>
+                            setMainImg(
+                              el?.url ? `${localHost}${el?.url}` : `${logo}`,
+                            )
+                          }
+                          key={Math.round(Math.random() * 1000000)}
+                          className={styles.article__img_bar_div}
+                        >
+                          <img
+                            className={`${styles.img__line}`}
+                            key={Math.round(Math.random() * 100000000)}
+                            src={el.url ? `${localHost}${el?.url}` : `${logo}`}
                             alt="element"
                           />
                         </div>
                       )
                     })}
                   </div>
-                  <div key={Math.round(Math.random()*1000)} className={`${styles.article__img_bar_mob}`}>
-                    {currentAdd.images.map((el) => {
+                  <div
+                    key={Math.round(Math.random() * 10000000)}
+                    className={`${styles.article__img_bar_mob}`}
+                  >
+                    {
+                    
+               
+                 currentAdd.images                    
+                    .map((el) => {
                       return (
-                        <div key={Math.round(Math.random()*100)}
+                        <div
+                          key={Math.round(Math.random() * 10000000)}
                           className={`${styles.img_bar_mob__circle} ${styles.circle_active}`}
                         >
-                          <img 
-                             key={Math.round(Math.random()*10)}
-                            className={`${styles.img_bar_mob__circle}`}
+                          <img
+                            key={Math.round(Math.random() * 1000000000)}
+                            className={` ${styles.img_bar_mob__circle}`}
                             src={el?.url ? `${localHost}${el?.url}` : `${logo}`}
                             alt="element"
                           />
@@ -131,7 +206,7 @@ const [commentsOpen, setCommentsOpen]= useState(false)
               <div className={styles.article__right}>
                 <div className={styles.article__block}>
                   <h3 className={`${styles.article__title} ${styles.title}`}>
-                    {currentAdd.title}
+                    Название: {currentAdd.title}
                   </h3>
                   <div className={styles.article__info}>
                     <p className={styles.article__date}>
@@ -140,64 +215,83 @@ const [commentsOpen, setCommentsOpen]= useState(false)
                     <p className={styles.article__city}>
                       {currentAdd.user.city}
                     </p>
-                    <span 
-                      style={{cursor:'pointer', color:'#0080C1', textDecoration:'underline'}}
-                      onClick={()=>{setCommentsOpen(true)}}
-                      // className={styles.article__link}
-                     
+                    <br />
+                    <label>Комментарии:</label>
+                    <span
+                      style={{
+                        cursor: 'pointer',
+                        color: '#0080C1',
+                        textDecoration: 'underline',
+                      }}
+                      onClick={() => {
+                        setCommentsOpen(true)
+                      }}
                     >
                       {comments.length}
                     </span>
                   </div>
-{/* comments */}
-          <Comments 
-          setComments={setComments} 
-          commentsOpen={commentsOpen} 
-          setCommentsOpen={setCommentsOpen} 
-          comments={comments}
-          commentId={postId}/>
-          
-                  <div className={`${styles.comments__list} ${styles.comments_visible}`}>
-                  {comments.map((el) => {
-                      return (
-                        <div key={el.id}>
-                          <h2>-{el.author.name}</h2>
-                          <h3>{el.text}</h3>
-                        </div>
-                      )
-                    })}
-                  </div>
-{/* comments */}
-                  <p className={styles.article__price}>{currentAdd.price}</p>
-                  {displayButtons&&<>
-                  
-                  {currentAddUserId===userId&& <div
-                    // key={showButtons}
-                     className={styles.button__block_edit}> 
-                  <EditButton />
-                  <DeleteButton postId={postId} />
-                  </div> }
-                  {currentAddUserId!==userId&& 
-                  <PhoneButton phone={currentAdd.user.phone}/>}
-                  </>}
+                  {/* comments */}
+                  <Comments
+                    setComments={setComments}
+                    commentsOpen={commentsOpen}
+                    setCommentsOpen={setCommentsOpen}
+                    comments={comments}
+                    commentId={postId}
+                  />
+                  {/* comments */}
+                  <p className={styles.article__price}>
+                    {currentAdd.price} руб.
+                  </p>
+
+                  {currentAddUserId === userId && (
+                    <div className={styles.button__block_edit}>
+                      {!displayButtons ? (
+                        <SkeletonTheme
+                          baseColor="aliceblue"
+                          highlightColor="rgb(217, 222, 226)"
+                        >
+                          <Skeleton className={styles.skelet_edit} />
+                        </SkeletonTheme>
+                      ) : (
+                        <EditButton   />
+                      )}
+
+                      {!displayButtons ? (
+                        <SkeletonTheme
+                          baseColor="aliceblue"
+                          highlightColor="rgb(217, 222, 226)"
+                        >
+                          <Skeleton className={styles.skelet_delete} />
+                        </SkeletonTheme>
+                      ) : (
+                        <DeleteButton postId={postId} />
+                      )}
+                    </div>
+                  )}
+
+                  {currentAddUserId !== userId && (
+                    <PhoneButton phone={currentAdd.user.phone} />
+                  )}
+
                   <div className={`${styles.article__author} ${styles.author}`}>
                     <div className={styles.author__img}>
-                      <Link to='/seller'>
-                      <img className={styles.seller__avatar}
-                        src={
-                          currentAdd.user?.avatar
-                            ? `${localHost}${currentAdd.user.avatar}`
-                            : `${logo}`
-                        }
-                        alt="author"
-                      />
+                      <Link to={`/seller/${currentAdd.user.id}`}>
+                        <img
+                          className={styles.seller__avatar}
+                          src={
+                            currentAdd.user?.avatar
+                              ? `${localHost}${currentAdd.user.avatar}`
+                              : `${logo}`
+                          }
+                          alt="author"
+                        />
                       </Link>
                     </div>
                     <div className={styles.author__cont}>
-                    <Link to='/seller'>
-                      <p className={styles.author__name}>
-                        {currentAdd.user.name}
-                      </p>
+                      <Link to={`/seller/${currentAdd.user.id}`}>
+                        <p className={styles.author__name}>
+                          {currentAdd.user.name}
+                        </p>
                       </Link>
                       <p className={styles.author__about}>
                         {currentAdd.user.sells_from}
@@ -222,7 +316,7 @@ const [commentsOpen, setCommentsOpen]= useState(false)
             </div>
           </div>
         </main>
-        <Footer/>
+        <Footer />
       </div>
     </div>
   )

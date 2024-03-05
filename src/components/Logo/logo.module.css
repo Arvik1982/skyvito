@@ -1,0 +1,27 @@
+.search__logo_mob_link {
+    display: none;
+  }
+  
+  .search__logo_img {
+    width: 54px;
+    height: auto;
+  }
+
+  @media screen and (max-width:590px) {
+    .search__logo-mob_link {
+        display: block;
+        width: 32px;
+        height: 32px;
+      }
+      .search__logo_link {
+        display: none;
+      }
+      .search__logo_mob_img {
+        width: 32px;
+        height: auto;
+        display: block;
+        -o-object-fit: cover;
+           object-fit: cover;
+      }
+    
+  }

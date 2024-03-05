@@ -1,50 +1,60 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styles from'./createpost.module.css'
-import uploadTxt from './createTxtPost_api'
-import uploadImg from './createImgPost_api'
-import { refreshTokens } from '../../api'
-import { setCreateAddStatus, setNewPostLoadSuccess, setNewPostReady} from '../../store/reducers/sliceAdds';
-import changeTxt from './changePostTxt_api';
+import uploadButtonClick from './uploadButtonClick';
+import saveUploadButtonClick from './saveCangesButtonClick';
+import del from '../ImgUpload/delNotSentImg';
 
-
-
-export default function UploadButton({
+export default function UploadButton(
+  {
+  imgNumberDel,
   file,
   title,
   description,
   price,
   imgUploadForms,
   editMode, 
-  postId
-}){
+  postId,
+  articleId,
+  setSrc,
+  setImgUploadForms,
+  setStartDel,
+  imgDeleteForms
+  
+  }
+  ){
+
+  const userAssessTokenRedux = useSelector((state) => state.authRedux.access_token);
+  const userRefreshTokenRedux = useSelector((state) => state.authRedux.access_refresh);
+
+  const currentAdd = JSON.parse(localStorage.getItem('currentAdd'))
 
   const navigate =useNavigate()
   const dispatch=useDispatch()
-  const newPostReady = useSelector((state) => state.addsRedux.newPostReady); 
-     
-  
+
+  const newPostReady = useSelector((state) => state.addsRedux.newPostReady);
+
   return(<>
   {!editMode &&  
   <>
   {!newPostReady&&<h2 style={{marginTop:'10px', color:'red', fontSize:'15px' }}> Заполните данные формы </h2>}
   <button
         disabled={newPostReady?false:true}
-        onClick={(e)=>{e.stopPropagation()
-         
-          dispatch(setNewPostReady(false));
-          refreshTokens()
-              .then((tokens)=>{ 
-                dispatch(setNewPostLoadSuccess(false));
-                   uploadTxt(tokens.access_token,title,description,price)  
-                   .then((txtData)=>{
-                    uploadImg(tokens.access_token,file,txtData.id,imgUploadForms)})
-                    .catch((errTxt)=>{console.log(errTxt)})})
-                    .then(()=>{
-                      dispatch(setNewPostLoadSuccess(true));
-                      dispatch(setCreateAddStatus(false))})
-                    .then(()=>{navigate('/profile')})
-                    .catch((errTokens)=>{console.log(errTokens)})
+        onClick={(e)=>{
+
+          uploadButtonClick(
+            e,
+            dispatch,
+            navigate,
+            title,
+            description,
+            price,
+            file,
+            imgUploadForms,
+            userAssessTokenRedux, 
+            userRefreshTokenRedux,
+            articleId)
+          
          }}
           type="button"
           className={
@@ -57,34 +67,50 @@ export default function UploadButton({
         }
         
 {/* CHANGE */}
-        {editMode && 
-        
+
+        {editMode &&
         <>
-        {!newPostReady&&<h2 style={{marginTop:'5px', color:'red', fontSize:'15px' }}> Заполните данные формы </h2>}
+        {!newPostReady&&<h2 style={{marginTop:'5px', color:'red', fontSize:'15px' }}>
+
+           Заполните данные формы </h2>}
+
         <button
         disabled={newPostReady?false:true}
-        onClick={(e)=>{ e.stopPropagation()
-          
-          dispatch(setNewPostReady(false));
-          refreshTokens()
-              .then((tokens)=>{ 
-                dispatch(setNewPostLoadSuccess(false));
-                changeTxt(tokens.access_token,title,description,price,postId)
-                 .then((txtData)=>{
-                 uploadImg(tokens.access_token,file,txtData.id,imgUploadForms)}
-                    ).catch((errTxt)=>{console.log(errTxt)})})
-                    .then(()=>{
-                    dispatch(setNewPostLoadSuccess(true));
-                    dispatch(setCreateAddStatus(false))})
-                    .then(()=>{navigate('/profile')})
-                    .catch((errTokens)=>{console.log(errTokens)})
+        onClick={(e)=>{ 
+         
+          del(
+                imgNumberDel,
+                setStartDel,
+                userAssessTokenRedux,
+                userRefreshTokenRedux,
+                dispatch,
+                currentAdd,
+                setSrc,
+                imgUploadForms,
+                setImgUploadForms,
+                imgDeleteForms
+                
+          )
+          saveUploadButtonClick(e, 
+            dispatch,
+            navigate,
+            title,
+            description,
+            price,
+            file,
+            imgUploadForms,
+            postId,
+            userAssessTokenRedux,
+            userRefreshTokenRedux
+            )
+        
          }}
           type="button"
           className={
             newPostReady?`${styles.form_newArt__btn_pub_ready} ${styles.btn_hov02}`:
             `${styles.form_newArt__btn_pub} `}
           id="btnPublish"
-        >Изменить
+        >Сохранить изменения
         </button>
         </>
          }

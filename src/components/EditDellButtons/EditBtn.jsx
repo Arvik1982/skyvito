@@ -3,12 +3,15 @@ import { useDispatch } from 'react-redux'
 import { setCreateAddStatus, setEditMode } from '../../store/reducers/sliceAdds'
 import styles from'./button.module.css'
 
+
 export default function EditButton(){
+ 
   const dispatch = useDispatch()
     return(
 
         <button
         onClick={()=>{
+          
           dispatch(setCreateAddStatus(true));
           dispatch(setEditMode(true))
         }}

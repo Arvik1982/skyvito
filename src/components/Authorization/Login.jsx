@@ -5,7 +5,7 @@ import styles from'./authorization.module.css'
 import logoModal from '../../img/logo_modal.png'
 import InputMail from './inputMail'
 import InputPass from './inputPass'
-import { setEnterMode, setTokenAccess, setUserData} from '../../store/reducers/sliceReg'
+import { setEnterMode, setTokenAccess, setUserData, setTokenRefresh, setUserMail} from '../../store/reducers/sliceReg'
 import { getUserByToken, getTokens } from '../../api'
 import { setError } from '../../store/reducers/sliceError'
 
@@ -16,6 +16,7 @@ export default function Login(){
     const loginName=useSelector(state=>state.authRedux.userMail)
     const password=useSelector(state=>state.authRedux.password)
     const error = useSelector(state=>state.errorRedux.error)
+
     useEffect(()=>{
         dispatch(setEnterMode('login'))
         dispatch(setError(''))
@@ -31,21 +32,24 @@ return(
                 <InputPass/>
                 {error&&<div style={{color:'red', position:'absolute', bottom:'45%', marginTop:'8px', marginBottom:'5px'}}>{error}</div>}
                 <button 
-                onClick={()=>{getTokens(loginName, password)
+                onClick={()=>{
+                    loginName&&password?
+                    
+                    getTokens(loginName, password)
                     
                     .then((tokens)=>{
                         
-                        dispatch(setTokenAccess(tokens.access_token))
+                        dispatch(setTokenAccess(tokens.access_token));
+                        dispatch(setTokenRefresh(tokens.refresh_token));
                         getUserByToken(tokens.access_token)
+
                         .then((data)=>{
                             localStorage.removeItem('userData');
-                            
                             dispatch(setUserData(data));
-                            
-                             navigate('/profile')})
+                            navigate('/profile')})
                         .catch((newError)=>{dispatch(setError(newError.message))})
 
-                    }).catch((newError)=>{dispatch(setError(newError.message))})
+                    }).catch((newError)=>{dispatch(setError(newError.message))}):dispatch(setError('Заполните Логин/Пароль'))
             }}
                 type='button' 
                 className={styles.modal__btn_enter} 
@@ -54,6 +58,7 @@ return(
              
                 <button
                 onClick={()=>{
+                    dispatch(setUserMail(''));
                     dispatch(setError(''));
                     dispatch(setEnterMode('registration'));
                     navigate('/login')

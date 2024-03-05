@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom"
 import { useSelector } from "react-redux"
 import Main from'../pages/Main/Main'
 import Article from "../pages/Article/Article"
-import MyArticle from "../pages/MyArticle/MyArticle"
+// import MyArticle from "../pages/MyArticle/MyArticle"
 import Profile from "../pages/Profile/Profile"
 import SellerProfile from "../pages/SellerProfile/SellerProfile"
 import AuthorizationPage from "../pages/Autorization/AuthorizationPage"
@@ -27,14 +27,14 @@ export default function AppRoutes(){
     return(
         <Routes>
             <Route path="/" element={<Main/>}/>
-            <Route path="/article" element={<Article/>}/>
-            <Route path="/myarticle" element={<MyArticle/>}/>
+            <Route path="/article/:id" element={<Article/>}/>
+            {/* <Route path="/myarticle" element={<MyArticle/>}/> */}
             
             <Route path="*" element={<ErrorPage/>}/>
             <Route path="/login" element={<AuthorizationPage/>}/>
         <Route element ={<ProtectedRoute isAllowed={isLogin} />}>
             <Route path="/profile" element={<Profile/>}/>
-            <Route path="/seller" element={<SellerProfile/>}/>
+            <Route path="/seller/:id" element={<SellerProfile/>}/>
         </Route>
         </Routes>
     )

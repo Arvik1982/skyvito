@@ -1,24 +1,52 @@
-
-import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 import styles from './Comments.module.css'
 import { localHost } from '../../vars/vars';
 import createComment from './createComment';
 import { getCurrentComment, refreshTokens } from '../../api';
+import dataFormat from'../../functions/dataformat'
 
 
-export default function Comments({ commentsOpen, setCommentsOpen, comments, 
-    setComments,
-    postId }) {
-    console.log(postId)
-    console.log(comments)
+export default function Comments({ commentsOpen, setCommentsOpen, comments, setComments }) {
+   
+const userAssessTokenRedux = useSelector((state) => state.authRedux.access_token);
+const userRefreshTokenRedux = useSelector((state) => state.authRedux.access_refresh);
 const [commentText, setCommentText]=useState('')
+const [login, setLogin]=useState(false)
 const currentAdd= JSON.parse(localStorage.getItem('currentAdd'))
+const token = localStorage.getItem('user_token')
 
+
+const existComment=!commentText||commentText.trim().length===0?true:false
+
+useEffect(()=>{
+  userAssessTokenRedux || token ? setLogin(true):setLogin(false)
+},[])
+
+const sendCommentClick = ()=>{
+
+  !commentText||commentText.trim().length===0?'':
+  refreshTokens(userAssessTokenRedux,userRefreshTokenRedux)
+  .then((tokens)=>{
+  createComment(tokens.access_token, commentText)
+  .then(()=>{
+  setCommentText('');
+  getCurrentComment(currentAdd.id)
+  .then((dataComments) => {
+      let dataArray = []
+      dataArray = dataComments
+      setComments(dataArray)
+    })
+  
+})})
+
+}
   return (
     <div 
       className={commentsOpen ? styles.modal__block : styles.noDisplay}>
 
       <div className={styles.modal__content}>
+      
         <h3 className={styles.modal__title}>Отзывы о товаре</h3>
 
         <div 
@@ -34,8 +62,17 @@ const currentAdd= JSON.parse(localStorage.getItem('currentAdd'))
             action="#"
           >
             <div className={styles.form_newArt__block}>
-              <label >Добавить отзыв</label>
+            <label >Добавить отзыв</label>
+              
+              {
+              
+              // !commentText
+              
+              existComment&&<label style={{color:'red'}} >
+                Заполните поле с отзывом</label>}
               <textarea
+              
+                disabled={userAssessTokenRedux || Boolean(token)?false:true}
                 value={commentText}
                 onChange={(e)=>{setCommentText(e.target.value);}}
                 className={styles.form_newArt__area}
@@ -45,39 +82,36 @@ const currentAdd= JSON.parse(localStorage.getItem('currentAdd'))
                 rows="5"
                 placeholder="Введите описание"
               />
+             
             </div>
+            
             <button
-            onClick={()=>{
-                    refreshTokens().then((tokens)=>{
-                    createComment(tokens.access_token, commentText).then((data)=>{
-                    console.log(data);
-                    getCurrentComment(currentAdd.id).then((dataComments) => {
-      
-                        let dataArray = []
-                        dataArray = dataComments
-                        setComments(dataArray)
-                      })
-                    // setComments(data)
-                })})}}
+            disabled={commentText?false:true}
+            onClick={ sendCommentClick }
               type='button'
-              className={`${styles.form_newArt__btn_pub} ${styles.btn_hov02}`}
+              className={!commentText||commentText.trim().length===0?`${styles.form_newArt__btn_pub} `:`${styles.form_newArt__btn_ready} ${styles.btn_hov02}`}
               id="btnPublish"
             >
               Опубликовать
             </button>
           </form>
-
+          
+          {!login && <h3 style={{color:'red'}}> Что бы оставить комментарий нужно войти в приложение</h3>}
+          
+          
           <div className={`${styles.modal__reviews} ${styles.reviews}`}>
+
  {/* COMMENTS */}
             
-            
-              {comments.map((el)=>{return(
-                <div className={`${styles.reviews__review} ${styles.review}`}>
+               {comments.map((el)=>{return(
+                <div key={el.id} className={`${styles.reviews__review} ${styles.review}`}>
                 <div className={styles.review__item}>
                 <div className={styles.review__left}>
 
-                  <div className={styles.review__img}>
-                    <img src={localHost+el.author.avatar} alt="" />
+                  <div 
+                  className={styles.review__img}
+                  >
+                    <img className={styles.review__img_avatar} src={localHost+el.author.avatar} alt="" />
                   </div>
 
                 </div>
@@ -87,7 +121,9 @@ const currentAdd= JSON.parse(localStorage.getItem('currentAdd'))
                   <p className={`${styles.review__name} ${styles.font_t}`}>
                     {' '}
                     {el.author.name}
-                    <span>14 августа</span>
+
+
+                    <span>{dataFormat( el.created_on)}</span>
                   </p>
                   <h5 className={`${styles.review__title} ${styles.font_t}`}>
                     Комментарий

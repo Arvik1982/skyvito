@@ -14,11 +14,14 @@ export default async function deletePost(token, id){
     },
   })
       if (!delResponse.ok) {
-        throw new Error('ulpoad_TXT_Oшибка сервера')
+       
+       throw new Error('ulpoad_TXT_Oшибка сервера')
       }
-      const del = await delResponse.json()
+       const del = await delResponse.json()
+      
       return del
   }catch (error)  {
+    
          console.log ('ulpoad_TXT_Oшибка сервера') 
          throw new Error(error.message)}
 }

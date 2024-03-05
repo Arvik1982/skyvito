@@ -1,4 +1,4 @@
-import { setEnterMode, setPass, setPass2, setUserData, setUserMail } from '../store/reducers/sliceReg'
+import { setEnterMode, setPass, setPass2, setTokenAccess, setTokenRefresh, setUserData, setUserMail } from '../store/reducers/sliceReg'
 import { setCurrentAdd, setCurrentUserAdds } from '../store/reducers/sliceAdds'
 
 export default function logout(dispatch, navigate){
@@ -15,6 +15,8 @@ export default function logout(dispatch, navigate){
     dispatch(setUserMail(''))
     dispatch(setPass(''))
     dispatch(setPass2(''))
+    dispatch(setTokenAccess(''))
+    dispatch(setTokenRefresh(''))
     
    
 }
