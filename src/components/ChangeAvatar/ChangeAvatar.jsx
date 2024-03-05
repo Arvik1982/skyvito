@@ -8,9 +8,12 @@ import { refreshTokens } from '../../api'
 import { setError } from '../../store/reducers/sliceError'
 
 export default function ChangeAvatar({ avatar }) {
-
-  const userAssessTokenRedux = useSelector((state) => state.authRedux.access_token);
-  const userRefreshTokenRedux = useSelector((state) => state.authRedux.access_refresh);
+  const userAssessTokenRedux = useSelector(
+    (state) => state.authRedux.access_token,
+  )
+  const userRefreshTokenRedux = useSelector(
+    (state) => state.authRedux.access_refresh,
+  )
 
   const realUpload = useRef(null)
   const dispatch = useDispatch()
@@ -27,36 +30,32 @@ export default function ChangeAvatar({ avatar }) {
           style={{ display: 'none' }}
           type="file"
           onChange={(event) => {
-
-                refreshTokens(userAssessTokenRedux,userRefreshTokenRedux)
-                  .then((tokens) => {
-                    uploadImage(
-                      event.target.files[0],
-                      tokens.access_token,
-                      'user/avatar',
-                    )
-                      .then((data) => {
-                        localStorage.removeItem('userData')
-                        dispatch(setUserData(data))
-                      })
-                      .catch((err) => {
-                        console.log(err)
-                        dispatch(
-                          setError(
-                            '3_avatar_Сессия истекла. Перезайдите в приложение',
-                          ),
-                        )
-                      })
+            refreshTokens(userAssessTokenRedux, userRefreshTokenRedux)
+              .then((tokens) => {
+                uploadImage(
+                  event.target.files[0],
+                  tokens.access_token,
+                  'user/avatar',
+                )
+                  .then((data) => {
+                    localStorage.removeItem('userData')
+                    dispatch(setUserData(data))
                   })
                   .catch((err) => {
                     console.log(err)
                     dispatch(
                       setError(
-                        '4_avatar_Сессия истекла. Перезайдите в приложение',
+                        '3_avatar_Сессия истекла. Перезайдите в приложение',
                       ),
                     )
                   })
-
+              })
+              .catch((err) => {
+                console.log(err)
+                dispatch(
+                  setError('4_avatar_Сессия истекла. Перезайдите в приложение'),
+                )
+              })
           }}
           className={styles.settings__change_photo}
           href=""

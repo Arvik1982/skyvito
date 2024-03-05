@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styles from './search.module.css'
-
 import {
   setSearchButtonClick,
   setSearchData,

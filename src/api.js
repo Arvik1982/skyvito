@@ -1,5 +1,3 @@
-
-
 export async function getAllAds() {
   const response = await fetch('http://localhost:8090/ads', {
     method: 'GET',
@@ -68,12 +66,12 @@ export async function registration(email, password, name, surname, city, id) {
       let err
       String(answer.details).includes('UNIQUE constraint failed: user.email')
         ? (err = ' Почта занята')
-        : (err = 'WTF Error')
+        : (err = 'Error api_71')
 
       throw new Error(err)
     }
     const newUser = await response.json()
-    
+
     return newUser
   } catch (error) {
     throw new Error(error.message)
@@ -132,126 +130,97 @@ export async function getUserByToken(token) {
   return newUserByToken
 }
 
-export async function refreshTokens(userAssessTokenRedux, userRefreshTokenRedux) 
-
-
-{
+export async function refreshTokens(
+  userAssessTokenRedux,
+  userRefreshTokenRedux,
+) {
   try {
-    
     const token = localStorage.getItem('user_token')
     const refresh = localStorage.getItem('user_token_refresh')
 
-   
-    
     const responseRefresh = await fetch('http://localhost:8090/auth/login', {
       method: 'PUT',
       body: JSON.stringify({
-        access_token: `${userAssessTokenRedux?userAssessTokenRedux:token}`,
-        refresh_token: `${userRefreshTokenRedux?userRefreshTokenRedux:refresh}`,
+        access_token: `${userAssessTokenRedux ? userAssessTokenRedux : token}`,
+        refresh_token: `${userRefreshTokenRedux ? userRefreshTokenRedux : refresh}`,
       }),
       headers: {
         'content-type': 'application/json',
       },
     })
-    
-    
-      if (!responseRefresh.ok && responseRefresh.status!==401 ) {
-        const errResponse = await responseRefresh.json()
-        
-        throw new Error(errResponse?.detail)
-  
+
+    if (!responseRefresh.ok && responseRefresh.status !== 401) {
+      const errResponse = await responseRefresh.json()
+
+      throw new Error(errResponse?.detail)
+    }
+
+    if (!responseRefresh.ok && responseRefresh.status === 401) {
+      console.log('Токены не требуют обновления')
+      const dataRefresh = {
+        access_token: token,
+        refresh_token: refresh,
       }
 
-      if (!responseRefresh.ok && responseRefresh.status===401 ) {
-        console.log('Too fresh tokens, OK')
-        const dataRefresh = 
-        {
-          access_token: token,
-          refresh_token: refresh,
-          
-        }
-        
-       return dataRefresh
-      }
-  
-
+      return dataRefresh
+    }
 
     const dataRefresh = await responseRefresh.json()
 
     if (dataRefresh.access_token && dataRefresh.refresh_token) {
-      
       localStorage.setItem('user_token', dataRefresh.access_token)
       localStorage.setItem('user_token_refresh', dataRefresh.refresh_token)
     }
-   
-    return dataRefresh
-    
 
+    return dataRefresh
   } catch (error) {
     throw new Error(error.message)
   }
-
 }
-
-
 
 export async function getCurrentUserAdds(accessTokenNew) {
-  
+  try {
+    const currentUserAddsResp = await fetch('http://127.0.0.1:8090/ads/me', {
+      method: 'GET',
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `Bearer ${accessTokenNew}`,
+      },
+    })
 
-  try{
-  const currentUserAddsResp = await fetch('http://127.0.0.1:8090/ads/me', {
-    method: 'GET',
-    headers: {
-      'content-type': 'application/json',
-      Authorization: `Bearer ${accessTokenNew}`,
-    },
-  })
-  
-  if (!currentUserAddsResp.ok) {
+    if (!currentUserAddsResp.ok) {
+      const currentUserAdds = await currentUserAddsResp.json()
+      throw new Error(currentUserAdds?.detail)
+    }
+    const userAdds = await currentUserAddsResp.json()
 
-  const currentUserAdds= await currentUserAddsResp.json()
-  throw new Error(currentUserAdds?.detail)
-
+    return userAdds
+  } catch (error) {
+    throw new Error(error)
   }
-  const userAdds = await currentUserAddsResp.json()
-  
-  return userAdds
 }
-catch(error){
-
-  
-
-  throw new Error(error)
-
-}
-};
 
 export async function changeUser(accessTokenNew, userNewData) {
+  try {
+    const currentUserAddsResp = await fetch('http://127.0.0.1:8090/user', {
+      method: 'PATCH',
+      body: JSON.stringify({
+        ...userNewData,
+      }),
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `Bearer ${accessTokenNew}`,
+      },
+    })
+    if (!currentUserAddsResp.ok) {
+      const currentUserAdds = await currentUserAddsResp.json()
 
-  try{
-  const currentUserAddsResp = await fetch('http://127.0.0.1:8090/user', {
-    method: 'PATCH',
-    body: JSON.stringify({
-      ...userNewData
-    }),
-    headers: {
-      'content-type': 'application/json',
-      Authorization: `Bearer ${accessTokenNew}`,
-    },
-  })
-  if (!currentUserAddsResp.ok) {
-  const currentUserAdds= await currentUserAddsResp.json()
+      throw new Error(currentUserAdds?.detail)
+    }
+    const userAdds = await currentUserAddsResp.json()
 
- 
-  throw new Error(currentUserAdds?.detail)
-
+    return userAdds
+  } catch (error) {
+    throw new Error(error.message)
   }
-  const userAdds = await currentUserAddsResp.json()
-  
-  return userAdds
-}
-catch(error){
-  
-  throw new Error(error.message)
-}
 }

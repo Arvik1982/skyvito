@@ -16,9 +16,7 @@ export default function CreatePost({ editMode, postId, articleId }) {
 
   const dispatch = useDispatch()
 
-   const [startDel, 
-    setStartDel
-  ] = useState(false)
+  const [startDel, setStartDel] = useState(false)
 
   const [file, setFile] = useState('')
   const [description, setDescription] = useState('')
@@ -39,20 +37,20 @@ export default function CreatePost({ editMode, postId, articleId }) {
     ? (formName = 'Редактировать объявление')
     : (formName = 'Новое объявление')
 
-    const [imgDeleteForms, setImgDeleteForms] = useState([
-      { id: 0, img: '', src: '', deleted:false },
-      { id: 1, img: '', src: '', deleted:false },
-      { id: 2, img: '', src: '', deleted:false },
-      { id: 3, img: '', src: '', deleted:false },
-      { id: 4, img: '', src: '', deleted:false },
-    ])    
+  const [imgDeleteForms, setImgDeleteForms] = useState([
+    { id: 0, img: '', src: '', deleted: false },
+    { id: 1, img: '', src: '', deleted: false },
+    { id: 2, img: '', src: '', deleted: false },
+    { id: 3, img: '', src: '', deleted: false },
+    { id: 4, img: '', src: '', deleted: false },
+  ])
 
   const [imgUploadForms, setImgUploadForms] = useState([
-    { id: 0, img: '', src: '', deleted:false },
-    { id: 1, img: '', src: '', deleted:false },
-    { id: 2, img: '', src: '', deleted:false },
-    { id: 3, img: '', src: '', deleted:false },
-    { id: 4, img: '', src: '', deleted:false },
+    { id: 0, img: '', src: '', deleted: false },
+    { id: 1, img: '', src: '', deleted: false },
+    { id: 2, img: '', src: '', deleted: false },
+    { id: 3, img: '', src: '', deleted: false },
+    { id: 4, img: '', src: '', deleted: false },
   ])
 
   useEffect(() => {
@@ -76,7 +74,7 @@ export default function CreatePost({ editMode, postId, articleId }) {
     titleEdit,
     description,
     descriptionEdit,
-    // deleted
+    
   ])
 
   useEffect(() => {
@@ -86,11 +84,7 @@ export default function CreatePost({ editMode, postId, articleId }) {
       el.id === imgNumber ? (el.img = file) : 'not file'
     })
     setImgUploadForms(imgUploadForms)
-  }, [
-    src,
-
-    // deleted
-  ])
+  }, [ src ])
 
   useEffect(() => {
     dispatch(setImgDeleted(false))
@@ -191,25 +185,23 @@ export default function CreatePost({ editMode, postId, articleId }) {
             className={`${styles.form_newArt__block} ${styles.block_price}`}
           />
 
-
           <label htmlFor="price">Цена</label>
 
           <div className={styles.price__block}>
-          
-          <input
-            value={editMode ? priceEdit : price}
-            onChange={(e) => {
-              editMode ? setPriceEdit(e.target.value):
-              setPrice(e.target.value)
-            }}
-            className={styles.form_newArt__input_price}
-            type="number"
-            name="price"
-            id="formName"/>
+            <input
+              value={editMode ? priceEdit : price}
+              onChange={(e) => {
+                editMode
+                  ? setPriceEdit(e.target.value)
+                  : setPrice(e.target.value)
+              }}
+              className={styles.form_newArt__input_price}
+              type="number"
+              name="price"
+              id="formName"
+            />
 
             <div className={styles.form_newArt__input_price_cover} />
-          
-
           </div>
 
           <UploadButton
@@ -226,12 +218,8 @@ export default function CreatePost({ editMode, postId, articleId }) {
             setImgUploadForms={setImgUploadForms}
             setStartDel={setStartDel}
             imgDeleteForms={imgDeleteForms}
-
           />
-     
         </form>
-
-       
       </div>
     </div>
   )
