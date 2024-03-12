@@ -52,6 +52,43 @@
         -ms-flex-direction: column;
             flex-direction: column;
   }
+  
+  .paginateButtons{
+    margin-left: 100px;
+    margin-top: 35px;
+    cursor: pointer;
+    width: 80%;
+    height: 40px;
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    color: #4eb9ee;
+    
+    }
+    .paginatePrevButtons{
+        &:hover{
+            color: #1575a4
+    }
+    }
+    
+    .paginateNextButtons{
+        &:hover{
+            color:  #1575a4
+    }
+    }
+    
+    .paginateDisabled{
+        display:none
+    }
+    .paginateButtons a{
+        padding: 10px;
+        margin: 8px;
+        border:  #1575a4 solid 2px;
+        border-radius: 15px;
+    }
+    .paginateActive{
+       color: rgb(55, 49, 49); 
+    }
   .wrapper {
     width: 100%;
     min-height: 100%;

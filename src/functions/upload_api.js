@@ -1,23 +1,17 @@
 import { accessToken, localHost } from '../vars/vars'
 
 export default function uploadImage(file, token, route) {
- 
-  
   let actualToken
   token ? (actualToken = token) : (actualToken = accessToken)
   const data = new FormData()
   data.append('file', file)
 
-
-
-
   return fetch(`${localHost}${route}`, {
     method: 'POST',
-    body:  data, 
-    
+    body: data,
+
     headers: {
-     
-      Authorization: `Bearer ${actualToken}`
+      Authorization: `Bearer ${actualToken}`,
     },
   })
     .then((response) => {

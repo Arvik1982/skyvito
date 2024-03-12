@@ -9,12 +9,14 @@ import {
 import ImgUploadForm from '../ImgUpload/ImgUploadForm'
 import UploadButton from './UploadButton'
 
-export default function CreatePost({ editMode, postId }) {
+export default function CreatePost({ editMode, postId, articleId }) {
   const deleted = useSelector((state) => state.addsRedux.imgDeleted)
 
   const currentAdd = JSON.parse(localStorage.getItem('currentAdd'))
 
   const dispatch = useDispatch()
+
+  const [startDel, setStartDel] = useState(false)
 
   const [file, setFile] = useState('')
   const [description, setDescription] = useState('')
@@ -22,6 +24,7 @@ export default function CreatePost({ editMode, postId }) {
   const [price, setPrice] = useState('')
   const [src, setSrc] = useState('')
   const [imgNumber, setImgNumber] = useState('')
+  const [imgNumberDel, setImgNumberDel] = useState('')
   const [newData, setNewData] = useState('')
   const [descriptionEdit, setDescriptionEdit] = useState(
     editMode ? currentAdd.description : '',
@@ -34,12 +37,20 @@ export default function CreatePost({ editMode, postId }) {
     ? (formName = 'Редактировать объявление')
     : (formName = 'Новое объявление')
 
+  const [imgDeleteForms, setImgDeleteForms] = useState([
+    { id: 0, img: '', src: '', deleted: false },
+    { id: 1, img: '', src: '', deleted: false },
+    { id: 2, img: '', src: '', deleted: false },
+    { id: 3, img: '', src: '', deleted: false },
+    { id: 4, img: '', src: '', deleted: false },
+  ])
+
   const [imgUploadForms, setImgUploadForms] = useState([
-    { id: 0, img: '', src: '', deleted:false },
-    { id: 1, img: '', src: '', deleted:false },
-    { id: 2, img: '', src: '', deleted:false },
-    { id: 3, img: '', src: '', deleted:false },
-    { id: 4, img: '', src: '', deleted:false },
+    { id: 0, img: '', src: '', deleted: false },
+    { id: 1, img: '', src: '', deleted: false },
+    { id: 2, img: '', src: '', deleted: false },
+    { id: 3, img: '', src: '', deleted: false },
+    { id: 4, img: '', src: '', deleted: false },
   ])
 
   useEffect(() => {
@@ -63,7 +74,7 @@ export default function CreatePost({ editMode, postId }) {
     titleEdit,
     description,
     descriptionEdit,
-    // deleted
+    
   ])
 
   useEffect(() => {
@@ -73,11 +84,7 @@ export default function CreatePost({ editMode, postId }) {
       el.id === imgNumber ? (el.img = file) : 'not file'
     })
     setImgUploadForms(imgUploadForms)
-  }, [
-    src,
-
-    // deleted
-  ])
+  }, [ src ])
 
   useEffect(() => {
     dispatch(setImgDeleted(false))
@@ -160,9 +167,15 @@ export default function CreatePost({ editMode, postId }) {
                     setImgUploadForms={setImgUploadForms}
                     imgNumber={imgNumber}
                     setImgNumber={setImgNumber}
+                    setImgNumberDel={setImgNumberDel}
+                    imgNumberDel={imgNumberDel}
                     editMode={editMode}
                     currentAdd={currentAdd}
                     postId={postId}
+                    startDel={startDel}
+                    setStartDel={setStartDel}
+                    setImgDeleteForms={setImgDeleteForms}
+                    imgDeleteForms={imgDeleteForms}
                   />
                 )
               })}
@@ -172,28 +185,27 @@ export default function CreatePost({ editMode, postId }) {
             className={`${styles.form_newArt__block} ${styles.block_price}`}
           />
 
-
           <label htmlFor="price">Цена</label>
 
           <div className={styles.price__block}>
-          
-          <input
-            value={editMode ? priceEdit : price}
-            onChange={(e) => {
-              editMode ? setPriceEdit(e.target.value):
-              setPrice(e.target.value)
-            }}
-            className={styles.form_newArt__input_price}
-            type="number"
-            name="price"
-            id="formName"/>
+            <input
+              value={editMode ? priceEdit : price}
+              onChange={(e) => {
+                editMode
+                  ? setPriceEdit(e.target.value)
+                  : setPrice(e.target.value)
+              }}
+              className={styles.form_newArt__input_price}
+              type="number"
+              name="price"
+              id="formName"
+            />
 
             <div className={styles.form_newArt__input_price_cover} />
-          
-
           </div>
 
           <UploadButton
+            imgNumberDel={imgNumberDel}
             postId={postId}
             editMode={editMode}
             file={file}
@@ -201,11 +213,13 @@ export default function CreatePost({ editMode, postId }) {
             description={editMode ? descriptionEdit : description}
             price={editMode ? priceEdit : price}
             imgUploadForms={imgUploadForms}
+            articleId={articleId}
+            setSrc={setSrc}
+            setImgUploadForms={setImgUploadForms}
+            setStartDel={setStartDel}
+            imgDeleteForms={imgDeleteForms}
           />
-     
         </form>
-
-       
       </div>
     </div>
   )
